@@ -21,16 +21,17 @@ public class UnsolvedMapDrawer extends MapDrawer {
         this.tsp = tsp;
     }
 
-    public void draw() {
+    @Override
+    public void draw(int additionalDrawSize) {
         GraphicsContext gc = mapCanvas.getGraphicsContext2D();
         cleanCanvas(gc);
         gc.setFill(Color.BLACK);
-        //gc.rotate(180);
+        gc.setTransform(getTransform());
+        final int w = getRectWidth() + additionalDrawSize;
+        final int h = getRectHeight() + additionalDrawSize;
         tsp.getNodes()
-                .forEach(node -> gc.fillRect(getX(node), getY(node), 2, 2));
+                .forEach(node -> gc.fillRect(getX(node), getY(node), w, h));
         LOG.debug("Done drawing");
     }
-
-
 
 }

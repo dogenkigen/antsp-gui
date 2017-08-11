@@ -25,9 +25,12 @@ import java.util.ResourceBundle;
 
 import static java.lang.System.exit;
 
-public class MainController implements Initializable{
+public class MainController implements Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
+
+    // TODO set by user
+    private static final int ADDITIONAL_DRAW_SIZE = 5;
 
     private Stage primaryStage;
 
@@ -66,7 +69,7 @@ public class MainController implements Initializable{
                 .withNearestNeighbors(config.getNearestNeighbourFactor())
                 .build();
         final Solution solution = new AntSystemSolver(matrices, config).getSolution();
-        new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
+        new SolvedMapDrawer(mapCanvas, tsp, solution).draw(ADDITIONAL_DRAW_SIZE);
     }
 
     private void openFile() {
@@ -77,7 +80,7 @@ public class MainController implements Initializable{
         final File file = fileChooser.showOpenDialog(primaryStage);
         try {
             tsp = TspLibParser.parse(file.getAbsolutePath());
-            new UnsolvedMapDrawer(mapCanvas, tsp).draw();
+            new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
             LOG.debug(tsp.getComment());
         } catch (IOException e) {
             e.printStackTrace();

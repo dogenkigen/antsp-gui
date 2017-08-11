@@ -5,16 +5,15 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1200.0" prefWidth="2000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
    <children>
-      <MenuBar prefHeight="29.0" prefWidth="2000.0">
+      <MenuBar prefHeight="29.0" prefWidth="1200.0">
         <menus>
           <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
             <items>
               <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
               <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
-              <MenuItem fx:id="solveMenuItem" mnemonicParsing="false"
-                        text="Solve" />
+              <MenuItem fx:id="solveMenuItem" mnemonicParsing="false" text="Solve" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -29,10 +28,10 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Canvas fx:id="mapCanvas" height="1062.0" layoutY="29.0" width="1657.0" />
-      <AnchorPane layoutX="1657.0" layoutY="29.0" prefHeight="1170.0" prefWidth="343.0">
+      <Canvas fx:id="mapCanvas" height="551.0" layoutY="29.0" width="839.0" />
+      <AnchorPane layoutX="843.0" layoutY="29.0" prefHeight="558.0" prefWidth="343.0">
          <children>
-            <Button fx:id="solveButton" layoutX="14.0" layoutY="73.0" mnemonicParsing="false" text="Button" />
+            <Button fx:id="solveButton" layoutY="74.0" mnemonicParsing="false" text="Button" />
          </children></AnchorPane>
    </children>
 </AnchorPane>
