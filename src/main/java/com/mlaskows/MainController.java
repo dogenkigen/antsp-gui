@@ -6,20 +6,16 @@ import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatricesBuilder;
 import com.mlaskows.antsp.solvers.antsolvers.AntSystemSolver;
-import com.mlaskows.tsplib.TspLibParser;
 import com.mlaskows.tsplib.datamodel.Tsp;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Menu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -35,19 +31,28 @@ public class MainController implements Initializable {
     private Stage primaryStage;
 
     @FXML
-    private Menu fileMenu;
-
-    @FXML
     private MenuItem closeMenuItem;
 
     @FXML
     private MenuItem openMenuItem;
 
     @FXML
+    private MenuItem solveMenuItem;
+
+    @FXML
     private Canvas mapCanvas;
 
     @FXML
-    private MenuItem solveMenuItem;
+    private Label nameLabel;
+
+    @FXML
+    private Label dimensionLabel;
+
+    @FXML
+    private Label commentLabel;
+
+    @FXML
+    private Label solutionLenLabel;
 
     private Tsp tsp;
 
@@ -73,18 +78,12 @@ public class MainController implements Initializable {
     }
 
     private void openFile() {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser
-                .ExtensionFilter("TSP file (*.tsp)", "*.tsp");
-        fileChooser.getExtensionFilters().add(extFilter);
-        final File file = fileChooser.showOpenDialog(primaryStage);
-        try {
-            tsp = TspLibParser.parse(file.getAbsolutePath());
-            new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
-            LOG.debug(tsp.getComment());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        tsp = TspFileHelper.getTsp(primaryStage);
+        LOG.debug("Opening TSP: " + tsp.getName() + " " + tsp.getComment());
+        nameLabel.setText(tsp.getName());
+        dimensionLabel.setText(String.valueOf(tsp.getDimension()));
+        commentLabel.setText(tsp.getComment());
+        new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
     }
 
     /**

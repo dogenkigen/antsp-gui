@@ -27,7 +27,7 @@ public class MainApp extends Application {
         Parent rootNode = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
 
         LOG.debug("Showing JFX scene");
-        Scene scene = new Scene(rootNode, 2000, 1200);
+        Scene scene = new Scene(rootNode, 1450, 800);
         //scene.getStylesheets().add("/styles/styles.css");
 
         stage.setTitle("Antsp");

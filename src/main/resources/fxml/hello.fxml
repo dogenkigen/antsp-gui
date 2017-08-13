@@ -5,9 +5,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
    <children>
-      <MenuBar prefHeight="29.0" prefWidth="1200.0">
+      <MenuBar prefHeight="29.0" prefWidth="1450.0">
         <menus>
           <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
             <items>
@@ -28,10 +28,40 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Canvas fx:id="mapCanvas" height="551.0" layoutY="29.0" width="839.0" />
-      <AnchorPane layoutX="843.0" layoutY="29.0" prefHeight="558.0" prefWidth="343.0">
+      <Canvas fx:id="mapCanvas" height="635.0" layoutY="29.0" width="1091.0" AnchorPane.bottomAnchor="136.0" AnchorPane.topAnchor="29.0" />
+      <AnchorPane layoutX="1099.0" layoutY="29.0" prefHeight="769.0" prefWidth="343.0">
          <children>
-            <Button fx:id="solveButton" layoutY="74.0" mnemonicParsing="false" text="Button" />
+            <Button fx:id="solveButton" layoutX="172.0" layoutY="358.0" mnemonicParsing="false" text="Solve" />
+            <CheckBox fx:id="localSearchCheckBox" layoutX="174.0" layoutY="328.0" mnemonicParsing="false" />
+            <ChoiceBox fx:id="algorithmTypeChoiceBox" layoutX="174.0" layoutY="71.0" prefWidth="150.0" />
+            <TextField fx:id="evaporationFactorTextField" layoutX="174.0" layoutY="108.0" prefHeight="27.0" prefWidth="150.0" />
+            <TextField fx:id="pheromoneImportanceTextField" layoutX="174.0" layoutY="144.0" prefHeight="27.0" prefWidth="150.0" />
+            <Label layoutX="12.0" layoutY="76.0" text="Algorithm type" />
+            <Label layoutX="12.0" layoutY="113.0" text="Evaporation factor" />
+            <Label layoutX="12.0" layoutY="149.0" text="Pheromone importance" />
+            <Label layoutX="12.0" layoutY="186.0" text="Heuristic importance" />
+            <TextField fx:id="heuristicImportanceTextField" layoutX="174.0" layoutY="181.0" prefHeight="27.0" prefWidth="150.0" />
+            <TextField fx:id="nnFactorTextField" layoutX="174.0" layoutY="218.0" prefHeight="27.0" prefWidth="150.0" />
+            <Label layoutX="12.0" layoutY="223.0" text="NN factor" />
+            <Label layoutX="12.0" layoutY="296.0" text="Max stagnation count" />
+            <TextField fx:id="maxStagnationTextField" layoutX="174.0" layoutY="291.0" prefHeight="27.0" prefWidth="150.0" />
+            <TextField fx:id="antsCountTextField" layoutX="174.0" layoutY="254.0" prefHeight="27.0" prefWidth="150.0" />
+            <Label layoutX="12.0" layoutY="259.0" text="Ants count" />
+            <Label layoutX="12.0" layoutY="329.0" text="Apply local search" />
          </children></AnchorPane>
+      <Separator layoutX="1093.0" layoutY="29.0" orientation="VERTICAL" prefHeight="769.0" prefWidth="0.0" />
+      <Separator layoutY="663.0" prefHeight="3.0" prefWidth="1091.0" />
+      <AnchorPane layoutX="6.0" layoutY="668.0" prefHeight="124.0" prefWidth="833.0">
+         <children>
+            <Label fx:id="nameLabel" layoutX="134.0" layoutY="23.0" />
+            <Label fx:id="dimensionLabel" layoutX="134.0" layoutY="40.0" />
+            <Label fx:id="commentLabel" layoutX="134.0" layoutY="57.0" />
+            <Label fx:id="SolutionLenLabel" layoutX="134.0" layoutY="74.0" />
+            <Label fx:id="SolutionLenLabel1" layoutX="21.0" layoutY="74.0" text="Solution length: " />
+            <Label layoutX="21.0" layoutY="57.0" text="Comment:  " />
+            <Label layoutX="21.0" layoutY="40.0" text="Dimension: " />
+            <Label layoutX="21.0" layoutY="23.0" text="Name:  " />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
