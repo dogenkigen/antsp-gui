@@ -7,9 +7,12 @@ import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatricesBuilder;
 import com.mlaskows.antsp.solvers.antsolvers.AntSystemSolver;
 import com.mlaskows.tsplib.datamodel.Tsp;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
@@ -54,6 +57,12 @@ public class MainController implements Initializable {
     @FXML
     private Label solutionLenLabel;
 
+    @FXML
+    private ChoiceBox algorithmTypeChoiceBox;
+
+    @FXML
+    private Button solveButton;
+
     private Tsp tsp;
 
     @Override
@@ -61,6 +70,8 @@ public class MainController implements Initializable {
         closeMenuItem.setOnAction(event -> exit(0));
         openMenuItem.setOnAction(event -> openFile());
         solveMenuItem.setOnAction(event -> solve());
+        solveButton.setOnAction(event -> solve());
+        algorithmTypeChoiceBox.setItems(FXCollections.observableArrayList("AS"));
     }
 
     private void solve() {
@@ -74,6 +85,7 @@ public class MainController implements Initializable {
                 .withNearestNeighbors(config.getNearestNeighbourFactor())
                 .build();
         final Solution solution = new AntSystemSolver(matrices, config).getSolution();
+        solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
         new SolvedMapDrawer(mapCanvas, tsp, solution).draw(ADDITIONAL_DRAW_SIZE);
     }
 
