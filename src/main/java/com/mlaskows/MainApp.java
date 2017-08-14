@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class MainApp extends Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainApp.class);
@@ -24,10 +26,16 @@ public class MainApp extends Application {
         String fxmlFile = "/fxml/hello.fxml";
         LOG.debug("Loading FXML for main view from: {}", fxmlFile);
         FXMLLoader loader = new FXMLLoader();
-        Parent rootNode = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
+        Parent rootNode = loader.load(getClass().getResourceAsStream(fxmlFile));
 
-        LOG.debug("Showing JFX scene");
-        Scene scene = new Scene(rootNode, 1450, 800);
+        GraphicsDevice gd = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+        LOG.debug("Showing JFX scene with height " + height + " and width " +
+                width);
+        Scene scene = new Scene(rootNode, width, height);
         //scene.getStylesheets().add("/styles/styles.css");
 
         stage.setTitle("Antsp");
