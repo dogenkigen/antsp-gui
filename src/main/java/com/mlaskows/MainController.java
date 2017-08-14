@@ -1,7 +1,6 @@
 package com.mlaskows;
 
-import com.mlaskows.antsp.config.AcoConfig;
-import com.mlaskows.antsp.config.AcoConfigFactory;
+import com.mlaskows.antsp.config.*;
 import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatricesBuilder;
@@ -87,6 +86,9 @@ public class MainController implements Initializable {
     private TextField maxStagnationTextField;
 
     @FXML
+    private CheckBox localSearchCheckBox;
+
+    @FXML
     private Button solveButton;
 
     @Override
@@ -104,11 +106,11 @@ public class MainController implements Initializable {
                 .addListener(
                         (ObservableValue<? extends AlgorithmType> observable,
                          AlgorithmType oldValue,
-                         AlgorithmType newValue) -> initFormForAlgoritmType(newValue)
+                         AlgorithmType newValue) -> initFormForAlgorithmType(newValue)
                 );
     }
 
-    private void initFormForAlgoritmType(AlgorithmType algorithmType) {
+    private void initFormForAlgorithmType(AlgorithmType algorithmType) {
         final AcoConfig config;
         switch (algorithmType) {
             case MIN_MAX:
@@ -136,7 +138,9 @@ public class MainController implements Initializable {
             //show error or disable button if nothing loaded
             return;
         }
-        final AcoConfig config = AcoConfigFactory.createDefaultAntSystemConfig(tsp.getDimension());
+        final AcoConfig config = getConfig(algorithmTypeChoiceBox
+                .getSelectionModel().getSelectedItem());
+        LOG.debug("Solving with config " + config.toString());
         final StaticMatrices matrices = new StaticMatricesBuilder(tsp)
                 .withHeuristicInformationMatrix()
                 .withNearestNeighbors(config.getNearestNeighbourFactor())
@@ -146,13 +150,36 @@ public class MainController implements Initializable {
         new SolvedMapDrawer(mapCanvas, tsp, solution).draw(ADDITIONAL_DRAW_SIZE);
     }
 
+    private AcoConfig getConfig(AlgorithmType algorithmType) {
+        final AcoConfigBuilder configBuilder;
+        switch (algorithmType) {
+            case MIN_MAX:
+                configBuilder = new MinMaxConfigBuilder();
+                // TODO add missing values
+                break;
+            case RANK_BASED:
+                configBuilder = new RankedBasedConfigBuilder();
+                break;
+                default:
+                    configBuilder = new AcoConfigBuilder();
+        }
+        configBuilder.withAntsCount(Integer.parseInt(antsCountTextField.getText()))
+                .withHeuristicImportance(Integer.parseInt(heuristicImportanceTextField.getText()))
+                .withPheromoneImportance(Integer.parseInt(pheromoneImportanceTextField.getText()))
+                .withMaxStagnationCount(Integer.parseInt(maxStagnationTextField.getText()))
+                .withPheromoneEvaporationFactor(Double.parseDouble(evaporationFactorTextField.getText()))
+                .withNearestNeighbourFactor(Integer.parseInt(nnFactorTextField.getText()))
+                .withWithLocalSearch(localSearchCheckBox.isSelected());
+        return configBuilder.build();
+    }
+
     private void openFile() {
         tsp = TspFileHelper.getTsp(primaryStage);
         LOG.debug("Opening TSP: " + tsp.getName() + " " + tsp.getComment());
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(tsp.getComment());
-        initFormForAlgoritmType(algorithmTypeChoiceBox.getValue());
+        initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
     }
 
