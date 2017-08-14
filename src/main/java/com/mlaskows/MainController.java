@@ -93,6 +93,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // TODO switch to onAction="#handleButtonAction"
         closeMenuItem.setOnAction(event -> exit(0));
         openMenuItem.setOnAction(event -> openFile());
         solveMenuItem.setOnAction(event -> solve());
