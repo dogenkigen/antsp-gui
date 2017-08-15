@@ -63,6 +63,9 @@ public class MainController {
     // form
 
     @FXML
+    private GridPane formGridPane;
+
+    @FXML
     private ChoiceBox<AlgorithmType> algorithmTypeChoiceBox;
 
     @FXML
@@ -88,6 +91,19 @@ public class MainController {
 
     @FXML
     private Button solveButton;
+
+    private final Label minLimitDividerLabel = new Label("Min. limit divider");
+
+    private final TextField minLimitDividerTextField = new TextField();
+
+    private final Label reinitializationCountLabel =
+            new Label("Reinitialization count");
+
+    private final TextField reinitializationCountTextField = new TextField();
+
+    private final Label weightLabel = new Label("Weight");
+
+    private final TextField weightTextField = new TextField();
 
     // map
 
@@ -118,15 +134,24 @@ public class MainController {
     }
 
     private void initFormForAlgorithmType(AlgorithmType algorithmType) {
+        hideAllOptionalFields();
         final AcoConfig config;
         switch (algorithmType) {
             case MIN_MAX:
+                showMinMaxOptionalFields();
                 config = AcoConfigFactory
                         .createDefaultMinMaxConfig(tsp.getDimension());
+                minLimitDividerTextField
+                        .setText(String.valueOf(((MinMaxConfig) config).getMinPheromoneLimitDivider()));
+                reinitializationCountTextField
+                        .setText(String.valueOf(((MinMaxConfig) config).getReinitializationCount()));
                 break;
             case RANK_BASED:
+                showRankBasedOptionalFields();
                 config = AcoConfigFactory
                         .createDefaultRankedBasedConfig(tsp.getDimension());
+                weightTextField
+                        .setText(String.valueOf(((RankedBasedConfig) config).getWeight()));
                 break;
             default:
                 config = AcoConfigFactory
@@ -138,6 +163,32 @@ public class MainController {
         nnFactorTextField.setText(String.valueOf(config.getNearestNeighbourFactor()));
         antsCountTextField.setText(String.valueOf(config.getAntsCount()));
         maxStagnationTextField.setText(String.valueOf(config.getMaxStagnationCount()));
+    }
+
+    private void showRankBasedOptionalFields() {
+        formGridPane.add(weightLabel, 0, 7);
+        formGridPane.add(weightTextField, 1, 7);
+        formGridPane.getRowConstraints().get(7).setMaxHeight(31);
+    }
+
+    private void showMinMaxOptionalFields() {
+        formGridPane.add(minLimitDividerLabel, 0, 7);
+        formGridPane.add(minLimitDividerTextField, 1, 7);
+        formGridPane.getRowConstraints().get(7).setMaxHeight(31);
+        formGridPane.add(reinitializationCountLabel, 0, 8);
+        formGridPane.add(reinitializationCountTextField, 1, 8);
+        formGridPane.getRowConstraints().get(8).setMaxHeight(31);
+    }
+
+    private void hideAllOptionalFields() {
+        formGridPane.getRowConstraints().get(7).setMaxHeight(0);
+        formGridPane.getRowConstraints().get(8).setMaxHeight(0);
+        formGridPane.getChildren().remove(minLimitDividerLabel);
+        formGridPane.getChildren().remove(minLimitDividerTextField);
+        formGridPane.getChildren().remove(reinitializationCountLabel);
+        formGridPane.getChildren().remove(reinitializationCountTextField);
+        formGridPane.getChildren().remove(weightLabel);
+        formGridPane.getChildren().remove(weightTextField);
     }
 
     private void solve() {
@@ -169,10 +220,14 @@ public class MainController {
         switch (algorithmType) {
             case MIN_MAX:
                 configBuilder = new MinMaxConfigBuilder();
-                // TODO add missing values
+                ((MinMaxConfigBuilder) configBuilder)
+                        .withMinPheromoneLimitDivider(Integer.parseInt(minLimitDividerTextField.getText()))
+                        .withReinitializationCount(Integer.parseInt(reinitializationCountTextField.getText()));
                 break;
             case RANK_BASED:
                 configBuilder = new RankedBasedConfigBuilder();
+                ((RankedBasedConfigBuilder) configBuilder)
+                        .withWeight(Integer.parseInt(weightTextField.getText()));
                 break;
             default:
                 configBuilder = new AcoConfigBuilder();
@@ -195,6 +250,7 @@ public class MainController {
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(formatComment(tsp.getComment(), maxCommentLen));
+        formGridPane.setDisable(false);
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw(DRAW_SIZE);
     }

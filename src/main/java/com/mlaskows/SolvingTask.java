@@ -26,7 +26,9 @@ public class SolvingTask extends Task<Solution> {
         this.tsp = tsp;
         this.config = config;
         progressDialog.setOnCloseRequest(event -> {
-            solver.stop();
+            if (solver != null) {
+                solver.stop();
+            }
             cancel();
         });
     }
@@ -38,6 +40,9 @@ public class SolvingTask extends Task<Solution> {
                 .withHeuristicInformationMatrix()
                 .withNearestNeighbors(config.getNearestNeighbourFactor())
                 .build();
+        if (isCancelled()) {
+            return null;
+        }
         runInPlatformThread(() -> progressDialog.setText("Solving problem..."));
         solver = new AntSystemSolver(matrices, config);
         return solver.getSolution();
