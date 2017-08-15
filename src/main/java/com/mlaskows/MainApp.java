@@ -30,7 +30,7 @@ public class MainApp extends Application {
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
 
-        stage.setTitle("FXML Welcome");
+        stage.setTitle("Antsp");
         stage.setScene(new Scene(root, width, height));
         stage.setResizable(false);
         stage.show();

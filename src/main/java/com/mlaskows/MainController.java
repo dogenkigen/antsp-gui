@@ -2,19 +2,19 @@ package com.mlaskows;
 
 import com.mlaskows.antsp.config.*;
 import com.mlaskows.antsp.datamodel.Solution;
-import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
-import com.mlaskows.antsp.datamodel.matrices.StaticMatricesBuilder;
 import com.mlaskows.antsp.solvers.AlgorithmType;
-import com.mlaskows.antsp.solvers.antsolvers.AntSystemSolver;
 import com.mlaskows.tsplib.datamodel.Tsp;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ExecutionException;
 
 import static com.mlaskows.TspFileHelper.formatComment;
 import static java.lang.System.exit;
@@ -148,13 +148,20 @@ public class MainController {
         final AcoConfig config = getConfig(algorithmTypeChoiceBox
                 .getSelectionModel().getSelectedItem());
         LOG.debug("Solving with config " + config.toString());
-        final StaticMatrices matrices = new StaticMatricesBuilder(tsp)
-                .withHeuristicInformationMatrix()
-                .withNearestNeighbors(config.getNearestNeighbourFactor())
-                .build();
-        final Solution solution = new AntSystemSolver(matrices, config).getSolution();
-        solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
-        new SolvedMapDrawer(mapCanvas, tsp, solution).draw(DRAW_SIZE);
+
+        Task<Solution> task = new SolvingTask(tsp, config);
+        final Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+        task.setOnSucceeded(e -> {
+            try {
+                final Solution solution = task.get();
+                solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
+                new SolvedMapDrawer(mapCanvas, tsp, solution).draw(DRAW_SIZE);
+            } catch (InterruptedException | ExecutionException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     private AcoConfig getConfig(AlgorithmType algorithmType) {
