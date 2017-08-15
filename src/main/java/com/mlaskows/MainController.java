@@ -10,30 +10,28 @@ import com.mlaskows.tsplib.datamodel.Tsp;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
+import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import static com.mlaskows.TspFileHelper.formatComment;
 import static java.lang.System.exit;
 
-public class MainController implements Initializable {
+public class MainController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
     // TODO set by user
     private static final int ADDITIONAL_DRAW_SIZE = 5;
 
-    private Stage primaryStage;
-
     private Tsp tsp;
 
     // menu
+
+    @FXML
+    private MenuBar menuBar;
 
     @FXML
     private MenuItem closeMenuItem;
@@ -44,10 +42,10 @@ public class MainController implements Initializable {
     @FXML
     private MenuItem solveMenuItem;
 
-    @FXML
-    private Canvas mapCanvas;
-
     // info
+
+    @FXML
+    private GridPane infoGridPane;
 
     @FXML
     private Label nameLabel;
@@ -91,8 +89,16 @@ public class MainController implements Initializable {
     @FXML
     private Button solveButton;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    // map
+
+    @FXML
+    private Canvas mapCanvas;
+
+    @FXML
+    public void initialize() {
+        /*final String os = System.getProperty("os.name");
+        if (os != null && os.startsWith("Mac"))
+            menuBar.useSystemMenuBarProperty().set(true);*/
         // TODO switch to onAction="#handleButtonAction"
         closeMenuItem.setOnAction(event -> exit(0));
         openMenuItem.setOnAction(event -> openFile());
@@ -161,8 +167,8 @@ public class MainController implements Initializable {
             case RANK_BASED:
                 configBuilder = new RankedBasedConfigBuilder();
                 break;
-                default:
-                    configBuilder = new AcoConfigBuilder();
+            default:
+                configBuilder = new AcoConfigBuilder();
         }
         configBuilder.withAntsCount(Integer.parseInt(antsCountTextField.getText()))
                 .withHeuristicImportance(Integer.parseInt(heuristicImportanceTextField.getText()))
@@ -175,17 +181,15 @@ public class MainController implements Initializable {
     }
 
     private void openFile() {
-        tsp = TspFileHelper.getTsp(primaryStage);
-        LOG.debug("Opening TSP: " + tsp.getName() + " " + tsp.getComment());
+        tsp = TspFileHelper.getTsp();
+        int maxCommentLen = (int) infoGridPane.getWidth() / 10;
+        LOG.debug("Opening TSP: " + tsp.getName() + " " +
+                formatComment(tsp.getComment(), maxCommentLen));
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
-        commentLabel.setText(tsp.getComment());
+        commentLabel.setText(formatComment(tsp.getComment(), maxCommentLen));
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
     }
 
 }

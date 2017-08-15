@@ -20,29 +20,19 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        LOG.info("Starting Hello JavaFX and Maven demonstration application");
-
-        String fxmlFile = "/fxml/hello.fxml";
-        LOG.debug("Loading FXML for main view from: {}", fxmlFile);
+        String fxmlFile = "/fxml/layout.fxml";
         FXMLLoader loader = new FXMLLoader();
-        Parent rootNode = loader.load(getClass().getResourceAsStream(fxmlFile));
+        Parent root = loader.load(getClass().getResourceAsStream(fxmlFile));
 
         GraphicsDevice gd = GraphicsEnvironment
                 .getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        LOG.debug("Showing JFX scene with height " + height + " and width " +
-                width);
-        Scene scene = new Scene(rootNode, width, height);
-        //scene.getStylesheets().add("/styles/styles.css");
 
-        stage.setTitle("Antsp");
-        stage.setScene(scene);
+        stage.setTitle("FXML Welcome");
+        stage.setScene(new Scene(root, width, height));
+        stage.setResizable(false);
         stage.show();
-
-        final MainController controller = loader.getController();
-        controller.setPrimaryStage(stage);
     }
 }
