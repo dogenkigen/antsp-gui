@@ -40,7 +40,7 @@ public abstract class MapDrawer {
         logValues();
     }
 
-    public abstract void draw(int additionalDrawSize);
+    public abstract void draw(int drawSize);
 
     public Affine getTransform() {
         final double minXSubtracted = getMinX() - xSubtract;
@@ -60,14 +60,6 @@ public abstract class MapDrawer {
             throw new RuntimeException(e.getMessage(), e);
         }
         return transform;
-    }
-
-    public int getRectWidth(){
-        return (int) Math.ceil(maxX / mapCanvas.getWidth());
-    }
-
-    public int getRectHeight(){
-        return (int) Math.ceil(maxY / mapCanvas.getHeight());
     }
 
     protected void cleanCanvas( GraphicsContext gc) {

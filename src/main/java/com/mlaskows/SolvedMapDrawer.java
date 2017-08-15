@@ -27,13 +27,13 @@ public class SolvedMapDrawer extends MapDrawer {
     }
 
     @Override
-    public void draw(int additionalDrawSize) {
+    public void draw(int drawSize) {
         LOG.debug("Drawing solution");
 
         final GraphicsContext gc = mapCanvas.getGraphicsContext2D();
         cleanCanvas(gc);
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(gc.getLineWidth() + additionalDrawSize);
+        gc.setLineWidth(drawSize);
         gc.setTransform(getTransform());
         Node previous = null;
         final Iterator<Integer> iterator = solution.getTour().iterator();

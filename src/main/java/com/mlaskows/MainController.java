@@ -24,7 +24,7 @@ public class MainController {
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
     // TODO set by user
-    private static final int ADDITIONAL_DRAW_SIZE = 5;
+    private static final int DRAW_SIZE = 7;
 
     private Tsp tsp;
 
@@ -154,7 +154,7 @@ public class MainController {
                 .build();
         final Solution solution = new AntSystemSolver(matrices, config).getSolution();
         solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
-        new SolvedMapDrawer(mapCanvas, tsp, solution).draw(ADDITIONAL_DRAW_SIZE);
+        new SolvedMapDrawer(mapCanvas, tsp, solution).draw(DRAW_SIZE);
     }
 
     private AcoConfig getConfig(AlgorithmType algorithmType) {
@@ -189,7 +189,7 @@ public class MainController {
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(formatComment(tsp.getComment(), maxCommentLen));
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
-        new UnsolvedMapDrawer(mapCanvas, tsp).draw(ADDITIONAL_DRAW_SIZE);
+        new UnsolvedMapDrawer(mapCanvas, tsp).draw(DRAW_SIZE);
     }
 
 }

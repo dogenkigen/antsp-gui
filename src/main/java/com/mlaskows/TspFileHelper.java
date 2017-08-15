@@ -32,8 +32,8 @@ public class TspFileHelper {
                 sb.append(System.getProperty("line.separator"));
                 length = 0;
             }
-            sb.append(" ");
             sb.append(s);
+            sb.append(" ");
         }
         return sb.toString();
     }
