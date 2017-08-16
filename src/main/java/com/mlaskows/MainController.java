@@ -5,6 +5,8 @@ import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.solvers.AlgorithmType;
 import com.mlaskows.draw.SolvedMapDrawer;
 import com.mlaskows.draw.UnsolvedMapDrawer;
+import com.mlaskows.save.ImageSaver;
+import com.mlaskows.save.SolutionSaver;
 import com.mlaskows.tsplib.datamodel.Tsp;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -12,10 +14,12 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import static com.mlaskows.TspFileHelper.formatComment;
@@ -30,8 +34,7 @@ public class MainController {
 
     private Tsp tsp;
 
-/*    @FXML
-    private BorderPane mainBorderPane;*/
+    private Solution solution;
 
     // menu
 
@@ -46,6 +49,12 @@ public class MainController {
 
     @FXML
     private MenuItem solveMenuItem;
+
+    @FXML
+    private MenuItem saveImageMenuItem;
+
+    @FXML
+    private MenuItem saveSolutionMenuItem;
 
     // info
 
@@ -125,6 +134,8 @@ public class MainController {
         openMenuItem.setOnAction(event -> openFile());
         solveMenuItem.setOnAction(event -> solve());
         solveButton.setOnAction(event -> solve());
+        saveImageMenuItem.setOnAction(event -> saveImage());
+        saveSolutionMenuItem.setOnAction(event -> saveSolution());
 
         algorithmTypeChoiceBox
                 .setItems(FXCollections.observableArrayList(AlgorithmType.values()));
@@ -136,6 +147,27 @@ public class MainController {
                          AlgorithmType oldValue,
                          AlgorithmType newValue) -> initFormForAlgorithmType(newValue)
                 );
+    }
+
+    private void saveSolution() {
+        try {
+            new SolutionSaver(tsp, solution).save();
+        } catch (IOException e) {
+            // TODO show error
+            LOG.error("Can't save solution file " + e.getMessage());
+        }
+    }
+
+    private void saveImage() {
+        WritableImage writableImage =
+                new WritableImage((int) mapCanvas.getWidth(), (int) mapCanvas.getHeight());
+        mapCanvas.snapshot(null, writableImage);
+        try {
+            new ImageSaver(writableImage).save();
+        } catch (IOException e) {
+            // TODO show error
+            LOG.error("Can't save image file " + e.getMessage());
+        }
     }
 
     private void initFormForAlgorithmType(AlgorithmType algorithmType) {
@@ -200,10 +232,6 @@ public class MainController {
     }
 
     private void solve() {
-        if (tsp == null) {
-            //show error or disable button if nothing loaded
-            return;
-        }
         final AlgorithmType algorithmType = algorithmTypeChoiceBox
                 .getSelectionModel().getSelectedItem();
         final AcoConfig config = getConfig(algorithmType);
@@ -215,11 +243,14 @@ public class MainController {
         thread.start();
         task.setOnSucceeded(e -> {
             try {
-                final Solution solution = task.get();
+                solution = task.get();
                 solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
                 new SolvedMapDrawer(mapCanvas, tsp, solution).draw(DRAW_SIZE);
+                saveImageMenuItem.setDisable(false);
+                saveSolutionMenuItem.setDisable(false);
             } catch (InterruptedException | ExecutionException ex) {
-                ex.printStackTrace();
+                // TODO show error
+                LOG.error("Can't solve problem " + ex.getMessage());
             }
         });
     }
@@ -256,12 +287,12 @@ public class MainController {
         LOG.debug("Opening TSP: " + tsp.getName() + " " +
                 comment);
         showInfo(comment);
-        enableElements();
+        enableElementsAfterLoadingProblem();
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw(DRAW_SIZE);
     }
 
-    private void enableElements() {
+    private void enableElementsAfterLoadingProblem() {
         formGridPane.setDisable(false);
         solveMenuItem.setDisable(false);
     }
