@@ -9,18 +9,13 @@ import java.io.IOException;
 
 public class TspFileHelper {
 
-    public static Tsp getTsp() {
+    public static Tsp getTsp() throws IOException {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser
                 .ExtensionFilter("TSP file (*.tsp)", "*.tsp");
         fileChooser.getExtensionFilters().add(extFilter);
         final File file = fileChooser.showOpenDialog(null);
-        try {
-            return TspLibParser.parse(file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return TspLibParser.parse(file.getAbsolutePath());
     }
 
     public static String formatComment(String comment, int maxCommentLen) {

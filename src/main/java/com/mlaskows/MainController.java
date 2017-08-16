@@ -281,7 +281,12 @@ public class MainController {
     }
 
     private void openFile() {
-        tsp = TspFileHelper.getTsp();
+        try {
+            tsp = TspFileHelper.getTsp();
+        } catch (Exception e) {
+            DialogUtil.showError("Can't open TSP file", e.getMessage());
+            return;
+        }
         int maxCommentLen = (int) infoGridPane.getWidth() / 10;
         final String comment = formatComment(tsp.getComment(), maxCommentLen);
         LOG.debug("Opening TSP: " + tsp.getName() + " " +
