@@ -22,11 +22,12 @@ public class UnsolvedMapDrawer extends MapDrawer {
     }
 
     @Override
-    public void draw(int drawSize) {
+    public void draw() {
         GraphicsContext gc = mapCanvas.getGraphicsContext2D();
         cleanCanvas(gc);
         gc.setFill(Color.BLACK);
         gc.setTransform(getTransform());
+        double drawSize = getDrawSize();
         tsp.getNodes()
                 .forEach(node -> gc.fillRect(getX(node), getY(node),
                         drawSize, drawSize));

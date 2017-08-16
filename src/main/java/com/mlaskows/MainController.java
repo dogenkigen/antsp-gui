@@ -29,9 +29,6 @@ public class MainController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
-    // TODO set by user
-    private static final int DRAW_SIZE = 7;
-
     private Tsp tsp;
 
     private Solution solution;
@@ -247,7 +244,7 @@ public class MainController {
             try {
                 solution = task.get();
                 solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
-                new SolvedMapDrawer(mapCanvas, tsp, solution).draw(DRAW_SIZE);
+                new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
                 saveImageMenuItem.setDisable(false);
                 saveSolutionMenuItem.setDisable(false);
             } catch (InterruptedException | ExecutionException ex) {
@@ -292,7 +289,7 @@ public class MainController {
         showInfo(comment);
         enableElementsAfterLoadingProblem();
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
-        new UnsolvedMapDrawer(mapCanvas, tsp).draw(DRAW_SIZE);
+        new UnsolvedMapDrawer(mapCanvas, tsp).draw();
     }
 
     private void enableElementsAfterLoadingProblem() {

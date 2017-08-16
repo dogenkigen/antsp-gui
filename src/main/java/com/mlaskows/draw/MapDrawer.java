@@ -13,6 +13,7 @@ public abstract class MapDrawer {
 
     private static final Logger LOG =
             LoggerFactory.getLogger(SolvedMapDrawer.class);
+    private static final double MIN_DRAW_SIZE = 5;
 
     private final Canvas mapCanvas;
     private final Tsp tsp;
@@ -40,7 +41,7 @@ public abstract class MapDrawer {
         logValues();
     }
 
-    public abstract void draw(int drawSize);
+    public abstract void draw();
 
     public Affine getTransform() {
         final double minXSubtracted = getMinX() - xSubtract;
@@ -73,6 +74,13 @@ public abstract class MapDrawer {
 
     protected double getX(Node node) {
         return (node.getX() - xSubtract);
+    }
+
+    protected double getDrawSize() {
+        final double v = ((maxY / mapCanvas.getHeight())
+                + (maxX / mapCanvas.getWidth()))
+                / 2;
+        return v > MIN_DRAW_SIZE ? v : MIN_DRAW_SIZE;
     }
 
     private double getMaxY() {

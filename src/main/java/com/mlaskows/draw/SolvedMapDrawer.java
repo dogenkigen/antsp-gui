@@ -27,9 +27,10 @@ public class SolvedMapDrawer extends MapDrawer {
     }
 
     @Override
-    public void draw(int drawSize) {
+    public void draw() {
         LOG.debug("Drawing solution");
 
+        double drawSize = getDrawSize();
         final GraphicsContext gc = mapCanvas.getGraphicsContext2D();
         cleanCanvas(gc);
         gc.setStroke(Color.BLACK);
