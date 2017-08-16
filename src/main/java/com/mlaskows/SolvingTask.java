@@ -91,8 +91,10 @@ public class SolvingTask extends Task<Solution> {
 
     @Override
     protected void failed() {
-        LOG.error("Failed to solve " + getException().getMessage());
+        final String error = "Failed to solve ";
+        LOG.error(error + getException().getMessage());
         progressDialog.hide();
+        DialogUtil.showError(error, getException().getMessage());
     }
 
     private void runInPlatformThread(Runnable runnable) {

@@ -153,8 +153,9 @@ public class MainController {
         try {
             new SolutionSaver(tsp, solution).save();
         } catch (IOException e) {
-            // TODO show error
-            LOG.error("Can't save solution file " + e.getMessage());
+            final String error = "Can't save solution file ";
+            LOG.error(error + e.getMessage());
+            DialogUtil.showError(error, e.getMessage());
         }
     }
 
@@ -165,8 +166,9 @@ public class MainController {
         try {
             new ImageSaver(writableImage).save();
         } catch (IOException e) {
-            // TODO show error
-            LOG.error("Can't save image file " + e.getMessage());
+            final String error = "Can't save image file ";
+            LOG.error(error + e.getMessage());
+            DialogUtil.showError(error, e.getMessage());
         }
     }
 
@@ -249,8 +251,9 @@ public class MainController {
                 saveImageMenuItem.setDisable(false);
                 saveSolutionMenuItem.setDisable(false);
             } catch (InterruptedException | ExecutionException ex) {
-                // TODO show error
-                LOG.error("Can't solve problem " + ex.getMessage());
+                final String error = "Can't solve problem ";
+                LOG.error(error + ex.getMessage());
+                DialogUtil.showError(error, ex.getMessage());
             }
         });
     }
