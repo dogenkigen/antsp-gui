@@ -3,6 +3,8 @@ package com.mlaskows;
 import com.mlaskows.antsp.config.*;
 import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.solvers.AlgorithmType;
+import com.mlaskows.draw.SolvedMapDrawer;
+import com.mlaskows.draw.UnsolvedMapDrawer;
 import com.mlaskows.tsplib.datamodel.Tsp;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -134,7 +136,7 @@ public class MainController {
     }
 
     private void initFormForAlgorithmType(AlgorithmType algorithmType) {
-        hideAllOptionalFields();
+        hideAllOptionalFieldsAndValues();
         final AcoConfig config;
         switch (algorithmType) {
             case MIN_MAX:
@@ -145,6 +147,7 @@ public class MainController {
                         .setText(String.valueOf(((MinMaxConfig) config).getMinPheromoneLimitDivider()));
                 reinitializationCountTextField
                         .setText(String.valueOf(((MinMaxConfig) config).getReinitializationCount()));
+                localSearchCheckBox.setSelected(true);
                 break;
             case RANK_BASED:
                 showRankBasedOptionalFields();
@@ -180,7 +183,7 @@ public class MainController {
         formGridPane.getRowConstraints().get(8).setMaxHeight(31);
     }
 
-    private void hideAllOptionalFields() {
+    private void hideAllOptionalFieldsAndValues() {
         formGridPane.getRowConstraints().get(7).setMaxHeight(0);
         formGridPane.getRowConstraints().get(8).setMaxHeight(0);
         formGridPane.getChildren().remove(minLimitDividerLabel);
@@ -189,6 +192,8 @@ public class MainController {
         formGridPane.getChildren().remove(reinitializationCountTextField);
         formGridPane.getChildren().remove(weightLabel);
         formGridPane.getChildren().remove(weightTextField);
+
+        localSearchCheckBox.setSelected(false);
     }
 
     private void solve() {
@@ -196,11 +201,12 @@ public class MainController {
             //show error or disable button if nothing loaded
             return;
         }
-        final AcoConfig config = getConfig(algorithmTypeChoiceBox
-                .getSelectionModel().getSelectedItem());
+        final AlgorithmType algorithmType = algorithmTypeChoiceBox
+                .getSelectionModel().getSelectedItem();
+        final AcoConfig config = getConfig(algorithmType);
         LOG.debug("Solving with config " + config.toString());
 
-        Task<Solution> task = new SolvingTask(tsp, config);
+        Task<Solution> task = new SolvingTask(tsp, config, algorithmType);
         final Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
@@ -219,14 +225,12 @@ public class MainController {
         final AcoConfigBuilder configBuilder;
         switch (algorithmType) {
             case MIN_MAX:
-                configBuilder = new MinMaxConfigBuilder();
-                ((MinMaxConfigBuilder) configBuilder)
+                configBuilder = new MinMaxConfigBuilder()
                         .withMinPheromoneLimitDivider(Integer.parseInt(minLimitDividerTextField.getText()))
                         .withReinitializationCount(Integer.parseInt(reinitializationCountTextField.getText()));
                 break;
             case RANK_BASED:
-                configBuilder = new RankedBasedConfigBuilder();
-                ((RankedBasedConfigBuilder) configBuilder)
+                configBuilder = new RankedBasedConfigBuilder()
                         .withWeight(Integer.parseInt(weightTextField.getText()));
                 break;
             default:
