@@ -5,7 +5,7 @@ import javafx.scene.layout.GridPane;
 
 public class ProgressDialog extends Dialog {
 
-    private final Label label = new Label();;
+    private final Label label = new Label();
 
     public ProgressDialog() {
         super();

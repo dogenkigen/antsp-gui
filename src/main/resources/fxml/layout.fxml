@@ -39,10 +39,10 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open file" />
-                  <MenuItem fx:id="saveSolutionMenuItem" disable="true" mnemonicParsing="false" text="Save solution as..." />
-                  <MenuItem fx:id="saveImageMenuItem" disable="true" mnemonicParsing="false" text="Save image as..." />
-              <MenuItem fx:id="solveMenuItem" disable="true" mnemonicParsing="false" text="Solve" />
+              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFile" text="Open file" />
+              <MenuItem fx:id="saveSolutionMenuItem" disable="true" mnemonicParsing="false" onAction="#saveSolution" text="Save solution as..." />
+              <MenuItem fx:id="saveImageMenuItem" disable="true" mnemonicParsing="false" onAction="#saveImage" text="Save image as..." />
+              <MenuItem fx:id="solveMenuItem" disable="true" mnemonicParsing="false" onAction="#solve" text="Solve" />
               <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
@@ -95,7 +95,7 @@
            <TextField fx:id="antsCountTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
            <Label text="Apply local search" GridPane.rowIndex="9" />
            <CheckBox fx:id="localSearchCheckBox" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-           <Button fx:id="solveButton" text="Solve" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+           <Button fx:id="solveButton" onAction="#solve" text="Solve" GridPane.columnIndex="1" GridPane.rowIndex="10" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

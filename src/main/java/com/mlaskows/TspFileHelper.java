@@ -15,6 +15,7 @@ public class TspFileHelper {
                 .ExtensionFilter("TSP file (*.tsp)", "*.tsp");
         fileChooser.getExtensionFilters().add(extFilter);
         final File file = fileChooser.showOpenDialog(null);
+        // TODO add behaviour when user escape durring file picking
         return TspLibParser.parse(file.getAbsolutePath());
     }
 

@@ -16,6 +16,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +42,6 @@ public class MainController {
 
     @FXML
     private MenuItem closeMenuItem;
-
-    @FXML
-    private MenuItem openMenuItem;
 
     @FXML
     private MenuItem solveMenuItem;
@@ -100,9 +99,6 @@ public class MainController {
     @FXML
     private CheckBox localSearchCheckBox;
 
-    @FXML
-    private Button solveButton;
-
     private final Label minLimitDividerLabel = new Label("Min. limit divider");
 
     private final TextField minLimitDividerTextField = new TextField();
@@ -126,13 +122,7 @@ public class MainController {
         /*final String os = System.getProperty("os.name");
         if (os != null && os.startsWith("Mac"))
             menuBar.useSystemMenuBarProperty().set(true);*/
-        // TODO switch to onAction="#handleButtonAction"
         closeMenuItem.setOnAction(event -> exit(0));
-        openMenuItem.setOnAction(event -> openFile());
-        solveMenuItem.setOnAction(event -> solve());
-        solveButton.setOnAction(event -> solve());
-        saveImageMenuItem.setOnAction(event -> saveImage());
-        saveSolutionMenuItem.setOnAction(event -> saveSolution());
 
         algorithmTypeChoiceBox
                 .setItems(FXCollections.observableArrayList(AlgorithmType.values()));
@@ -144,9 +134,61 @@ public class MainController {
                          AlgorithmType oldValue,
                          AlgorithmType newValue) -> initFormForAlgorithmType(newValue)
                 );
+
+        evaporationFactorTextField.setTextFormatter(getDoubleTextFormatter());
+        pheromoneImportanceTextField.setTextFormatter(getIntegerTextFormatter());
+        heuristicImportanceTextField.setTextFormatter(getIntegerTextFormatter());
+        nnFactorTextField.setTextFormatter(getIntegerTextFormatter());
+        antsCountTextField.setTextFormatter(getIntegerTextFormatter());
+        maxStagnationTextField.setTextFormatter(getIntegerTextFormatter());
+        minLimitDividerTextField.setTextFormatter(getIntegerTextFormatter());
+        reinitializationCountTextField.setTextFormatter(getIntegerTextFormatter());
+        weightTextField.setTextFormatter(getIntegerTextFormatter());
     }
 
-    private void saveSolution() {
+    public void openFile() {
+        try {
+            tsp = TspFileHelper.getTsp();
+        } catch (Exception e) {
+            DialogUtil.showError("Can't open TSP file", e.getMessage());
+            return;
+        }
+        int maxCommentLen = (int) infoGridPane.getWidth() / 10;
+        final String comment = formatComment(tsp.getComment(), maxCommentLen);
+        LOG.debug("Opening TSP: " + tsp.getName() + " " +
+                comment);
+        showInfo(comment);
+        enableElementsAfterLoadingProblem();
+        initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
+        new UnsolvedMapDrawer(mapCanvas, tsp).draw();
+    }
+
+    public void solve() {
+        final AlgorithmType algorithmType = algorithmTypeChoiceBox
+                .getSelectionModel().getSelectedItem();
+        final AcoConfig config = getConfig(algorithmType);
+        LOG.debug("Solving with config " + config.toString());
+
+        Task<Solution> task = new SolvingTask(tsp, config, algorithmType);
+        final Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+        task.setOnSucceeded(e -> {
+            try {
+                solution = task.get();
+                solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
+                new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
+                saveImageMenuItem.setDisable(false);
+                saveSolutionMenuItem.setDisable(false);
+            } catch (InterruptedException | ExecutionException ex) {
+                final String error = "Can't solve problem ";
+                LOG.error(error + ex.getMessage());
+                DialogUtil.showError(error, ex.getMessage());
+            }
+        });
+    }
+
+    public void saveSolution() {
         try {
             new SolutionSaver(tsp, solution).save();
         } catch (IOException e) {
@@ -156,7 +198,7 @@ public class MainController {
         }
     }
 
-    private void saveImage() {
+    public void saveImage() {
         WritableImage writableImage =
                 new WritableImage((int) mapCanvas.getWidth(), (int) mapCanvas.getHeight());
         mapCanvas.snapshot(null, writableImage);
@@ -230,31 +272,6 @@ public class MainController {
         localSearchCheckBox.setSelected(false);
     }
 
-    private void solve() {
-        final AlgorithmType algorithmType = algorithmTypeChoiceBox
-                .getSelectionModel().getSelectedItem();
-        final AcoConfig config = getConfig(algorithmType);
-        LOG.debug("Solving with config " + config.toString());
-
-        Task<Solution> task = new SolvingTask(tsp, config, algorithmType);
-        final Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
-        task.setOnSucceeded(e -> {
-            try {
-                solution = task.get();
-                solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
-                new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
-                saveImageMenuItem.setDisable(false);
-                saveSolutionMenuItem.setDisable(false);
-            } catch (InterruptedException | ExecutionException ex) {
-                final String error = "Can't solve problem ";
-                LOG.error(error + ex.getMessage());
-                DialogUtil.showError(error, ex.getMessage());
-            }
-        });
-    }
-
     private AcoConfig getConfig(AlgorithmType algorithmType) {
         final AcoConfigBuilder configBuilder;
         switch (algorithmType) {
@@ -280,23 +297,6 @@ public class MainController {
         return configBuilder.build();
     }
 
-    private void openFile() {
-        try {
-            tsp = TspFileHelper.getTsp();
-        } catch (Exception e) {
-            DialogUtil.showError("Can't open TSP file", e.getMessage());
-            return;
-        }
-        int maxCommentLen = (int) infoGridPane.getWidth() / 10;
-        final String comment = formatComment(tsp.getComment(), maxCommentLen);
-        LOG.debug("Opening TSP: " + tsp.getName() + " " +
-                comment);
-        showInfo(comment);
-        enableElementsAfterLoadingProblem();
-        initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
-        new UnsolvedMapDrawer(mapCanvas, tsp).draw();
-    }
-
     private void enableElementsAfterLoadingProblem() {
         formGridPane.setDisable(false);
         solveMenuItem.setDisable(false);
@@ -306,6 +306,14 @@ public class MainController {
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(comment);
+    }
+
+    private TextFormatter<Integer> getIntegerTextFormatter() {
+        return new TextFormatter<>(new IntegerStringConverter(), 0, new IntegerFilter());
+    }
+
+    private TextFormatter<Double> getDoubleTextFormatter() {
+        return new TextFormatter<>(new DoubleStringConverter(), 0.0, new DoubleFilter());
     }
 
 }
