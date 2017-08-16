@@ -30,8 +30,11 @@ public class MainApp extends Application {
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
 
+        final Scene scene = new Scene(root, width, height);
+        scene.getStylesheets().add("/styles/styles.css");
+
         stage.setTitle("Antsp");
-        stage.setScene(new Scene(root, width, height));
+        stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }

@@ -30,6 +30,9 @@ public class MainController {
 
     private Tsp tsp;
 
+/*    @FXML
+    private BorderPane mainBorderPane;*/
+
     // menu
 
     @FXML
@@ -249,14 +252,24 @@ public class MainController {
     private void openFile() {
         tsp = TspFileHelper.getTsp();
         int maxCommentLen = (int) infoGridPane.getWidth() / 10;
+        final String comment = formatComment(tsp.getComment(), maxCommentLen);
         LOG.debug("Opening TSP: " + tsp.getName() + " " +
-                formatComment(tsp.getComment(), maxCommentLen));
-        nameLabel.setText(tsp.getName());
-        dimensionLabel.setText(String.valueOf(tsp.getDimension()));
-        commentLabel.setText(formatComment(tsp.getComment(), maxCommentLen));
-        formGridPane.setDisable(false);
+                comment);
+        showInfo(comment);
+        enableElements();
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw(DRAW_SIZE);
+    }
+
+    private void enableElements() {
+        formGridPane.setDisable(false);
+        solveMenuItem.setDisable(false);
+    }
+
+    private void showInfo(String comment) {
+        nameLabel.setText(tsp.getName());
+        dimensionLabel.setText(String.valueOf(tsp.getDimension()));
+        commentLabel.setText(comment);
     }
 
 }

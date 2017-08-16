@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mlaskows.MainController">
    <bottom>
       <GridPane fx:id="infoGridPane" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -39,9 +39,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
+              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open file" />
+              <MenuItem fx:id="solveMenuItem" disable="true" mnemonicParsing="false" text="Solve" />
               <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
-              <MenuItem fx:id="solveMenuItem" mnemonicParsing="false" text="Solve" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -101,6 +101,13 @@
       </GridPane>
    </right>
    <left>
-      <Canvas fx:id="mapCanvas" height="635.0" width="1090.0" BorderPane.alignment="CENTER" />
+       <StackPane fx:id="mapStackPane">
+          <children>
+              <Canvas fx:id="mapCanvas" height="635.0" width="1090.0" BorderPane.alignment="CENTER">
+               <StackPane.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </StackPane.margin></Canvas>
+          </children>
+       </StackPane>
    </left>
 </BorderPane>
