@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -35,6 +36,8 @@ public class MainController {
     private Tsp tsp;
 
     private Solution solution;
+
+    private Parameters parameters = new Parameters();
 
     // menu
 
@@ -125,6 +128,9 @@ public class MainController {
             menuBar.useSystemMenuBarProperty().set(true);*/
         closeMenuItem.setOnAction(event -> exit(0));
 
+        initValidation();
+        initBinding();
+
         algorithmTypeChoiceBox
                 .setItems(FXCollections.observableArrayList(AlgorithmType.values()));
         algorithmTypeChoiceBox.getSelectionModel().selectFirst();
@@ -135,16 +141,6 @@ public class MainController {
                          AlgorithmType oldValue,
                          AlgorithmType newValue) -> initFormForAlgorithmType(newValue)
                 );
-
-        evaporationFactorTextField.setTextFormatter(getDoubleTextFormatter());
-        pheromoneImportanceTextField.setTextFormatter(getIntegerTextFormatter());
-        heuristicImportanceTextField.setTextFormatter(getIntegerTextFormatter());
-        nnFactorTextField.setTextFormatter(getIntegerTextFormatter());
-        antsCountTextField.setTextFormatter(getIntegerTextFormatter());
-        maxStagnationTextField.setTextFormatter(getIntegerTextFormatter());
-        minLimitDividerTextField.setTextFormatter(getIntegerTextFormatter());
-        reinitializationCountTextField.setTextFormatter(getIntegerTextFormatter());
-        weightTextField.setTextFormatter(getIntegerTextFormatter());
     }
 
     public void openFile() {
@@ -164,13 +160,12 @@ public class MainController {
         LOG.debug("Opening TSP: " + tsp.getName() + " " + comment);
         showInfo(comment);
         enableElementsAfterLoadingProblem();
-        initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
+        initFormForAlgorithmType(parameters.getAlgorithmType());
         new UnsolvedMapDrawer(mapCanvas, tsp).draw();
     }
 
     public void solve() {
-        final AlgorithmType algorithmType = algorithmTypeChoiceBox
-                .getSelectionModel().getSelectedItem();
+        final AlgorithmType algorithmType = parameters.getAlgorithmType();
         final AcoConfig config = getConfig(algorithmType);
         LOG.debug("Solving with config " + config.toString());
 
@@ -224,29 +219,28 @@ public class MainController {
                 showMinMaxOptionalFields();
                 config = AcoConfigFactory
                         .createDefaultMinMaxConfig(tsp.getDimension());
-                minLimitDividerTextField
-                        .setText(String.valueOf(((MinMaxConfig) config).getMinPheromoneLimitDivider()));
-                reinitializationCountTextField
-                        .setText(String.valueOf(((MinMaxConfig) config).getReinitializationCount()));
+                parameters.setMinLimitDivider(((MinMaxConfig) config).getMinPheromoneLimitDivider());
+                parameters.setReinitializationCount(((MinMaxConfig) config).getReinitializationCount());
                 localSearchCheckBox.setSelected(true);
                 break;
             case RANK_BASED:
                 showRankBasedOptionalFields();
                 config = AcoConfigFactory
                         .createDefaultRankedBasedConfig(tsp.getDimension());
-                weightTextField
-                        .setText(String.valueOf(((RankedBasedConfig) config).getWeight()));
+                parameters.setReinitializationCount(((RankedBasedConfig) config).getWeight());
                 break;
             default:
                 config = AcoConfigFactory
                         .createDefaultAntSystemConfig(tsp.getDimension());
         }
-        evaporationFactorTextField.setText(String.valueOf(config.getPheromoneEvaporationFactor()));
-        pheromoneImportanceTextField.setText(String.valueOf(config.getPheromoneImportance()));
-        heuristicImportanceTextField.setText(String.valueOf(config.getHeuristicImportance()));
-        nnFactorTextField.setText(String.valueOf(config.getNearestNeighbourFactor()));
-        antsCountTextField.setText(String.valueOf(config.getAntsCount()));
-        maxStagnationTextField.setText(String.valueOf(config.getMaxStagnationCount()));
+
+        parameters.setEvaporationFactor(config.getPheromoneEvaporationFactor());
+        parameters.setPheromoneImportance(config.getPheromoneImportance());
+        parameters.setHeuristicImportance(config.getHeuristicImportance());
+        parameters.setNnFactor(config.getNearestNeighbourFactor());
+        parameters.setAntsCount(config.getAntsCount());
+        parameters.setMaxStagnationCount(config.getMaxStagnationCount());
+        LOG.debug("Alg: " + parameters.getAlgorithmType());
     }
 
     private void showRankBasedOptionalFields() {
@@ -282,22 +276,22 @@ public class MainController {
         switch (algorithmType) {
             case MIN_MAX:
                 configBuilder = new MinMaxConfigBuilder()
-                        .withMinPheromoneLimitDivider(Integer.parseInt(minLimitDividerTextField.getText()))
-                        .withReinitializationCount(Integer.parseInt(reinitializationCountTextField.getText()));
+                        .withMinPheromoneLimitDivider(parameters.getMinLimitDivider())
+                        .withReinitializationCount(parameters.getReinitializationCount());
                 break;
             case RANK_BASED:
                 configBuilder = new RankedBasedConfigBuilder()
-                        .withWeight(Integer.parseInt(weightTextField.getText()));
+                        .withWeight(parameters.getWeight());
                 break;
             default:
                 configBuilder = new AcoConfigBuilder();
         }
-        configBuilder.withAntsCount(Integer.parseInt(antsCountTextField.getText()))
-                .withHeuristicImportance(Integer.parseInt(heuristicImportanceTextField.getText()))
-                .withPheromoneImportance(Integer.parseInt(pheromoneImportanceTextField.getText()))
-                .withMaxStagnationCount(Integer.parseInt(maxStagnationTextField.getText()))
-                .withPheromoneEvaporationFactor(Double.parseDouble(evaporationFactorTextField.getText()))
-                .withNearestNeighbourFactor(Integer.parseInt(nnFactorTextField.getText()))
+        configBuilder.withAntsCount(parameters.getAntsCount())
+                .withHeuristicImportance(parameters.getHeuristicImportance())
+                .withPheromoneImportance(parameters.getPheromoneImportance())
+                .withMaxStagnationCount(parameters.getMaxStagnationCount())
+                .withPheromoneEvaporationFactor(parameters.getEvaporationFactor())
+                .withNearestNeighbourFactor(parameters.getNnFactor())
                 .withWithLocalSearch(localSearchCheckBox.isSelected());
         return configBuilder.build();
     }
@@ -311,6 +305,51 @@ public class MainController {
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(comment);
+    }
+
+    private void initBinding() {
+        algorithmTypeChoiceBox
+                .valueProperty()
+                .bindBidirectional(parameters.algorithmTypeProperty());
+        evaporationFactorTextField
+                .textProperty()
+                .bindBidirectional(parameters.evaporationFactorProperty(), new DecimalFormat());
+        pheromoneImportanceTextField
+                .textProperty()
+                .bindBidirectional(parameters.pheromoneImportanceProperty(), new DecimalFormat());
+        heuristicImportanceTextField
+                .textProperty()
+                .bindBidirectional(parameters.heuristicImportanceProperty(), new DecimalFormat());
+        nnFactorTextField
+                .textProperty()
+                .bindBidirectional(parameters.nnFactorProperty(), new DecimalFormat());
+        antsCountTextField
+                .textProperty()
+                .bindBidirectional(parameters.antsCountProperty(), new DecimalFormat());
+        maxStagnationTextField
+                .textProperty()
+                .bindBidirectional(parameters.maxStagnationCountProperty(), new DecimalFormat());
+        minLimitDividerTextField
+                .textProperty()
+                .bindBidirectional(parameters.minLimitDividerProperty(), new DecimalFormat());
+        reinitializationCountTextField
+                .textProperty()
+                .bindBidirectional(parameters.reinitializationCountProperty(), new DecimalFormat());
+        weightTextField
+                .textProperty()
+                .bindBidirectional(parameters.weightProperty(), new DecimalFormat());
+    }
+
+    private void initValidation() {
+        evaporationFactorTextField.setTextFormatter(getDoubleTextFormatter());
+        pheromoneImportanceTextField.setTextFormatter(getIntegerTextFormatter());
+        heuristicImportanceTextField.setTextFormatter(getIntegerTextFormatter());
+        nnFactorTextField.setTextFormatter(getIntegerTextFormatter());
+        antsCountTextField.setTextFormatter(getIntegerTextFormatter());
+        maxStagnationTextField.setTextFormatter(getIntegerTextFormatter());
+        minLimitDividerTextField.setTextFormatter(getIntegerTextFormatter());
+        reinitializationCountTextField.setTextFormatter(getIntegerTextFormatter());
+        weightTextField.setTextFormatter(getIntegerTextFormatter());
     }
 
     private TextFormatter<Integer> getIntegerTextFormatter() {
