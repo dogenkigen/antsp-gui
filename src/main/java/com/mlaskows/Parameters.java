@@ -35,6 +35,10 @@ public class Parameters {
                         .createDefaultRankedBasedConfig(tspDimension);
                 setWeight(((RankedBasedConfig) config).getWeight());
                 break;
+            case ELITIST:
+                config = AcoConfigFactory
+                        .createDefaultElitistConfig(tspDimension);
+                break;
             default:
                 config = AcoConfigFactory
                         .createDefaultAntSystemConfig(tspDimension);
