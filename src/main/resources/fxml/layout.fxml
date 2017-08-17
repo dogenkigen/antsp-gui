@@ -39,21 +39,33 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFile" text="Open file" />
-              <MenuItem fx:id="saveSolutionMenuItem" disable="true" mnemonicParsing="false" onAction="#saveSolution" text="Save solution as..." />
-              <MenuItem fx:id="saveImageMenuItem" disable="true" mnemonicParsing="false" onAction="#saveImage" text="Save image as..." />
-              <MenuItem fx:id="solveMenuItem" disable="true" mnemonicParsing="false" onAction="#solve" text="Solve" />
-              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="openMenuItem" mnemonicParsing="false"
+                        onAction="#openFile" text="Open file"
+                        accelerator="Shortcut+O"/>
+              <MenuItem fx:id="saveSolutionMenuItem" disable="true"
+                        mnemonicParsing="false" onAction="#saveSolution"
+                        text="Save solution as..."  accelerator="Shortcut+S"/>
+              <MenuItem fx:id="saveImageMenuItem" disable="true"
+                        mnemonicParsing="false" onAction="#saveImage"
+                        text="Save image as..." accelerator="Shortcut+Shift+S"/>
+              <MenuItem fx:id="solveMenuItem" disable="true"
+                        mnemonicParsing="false" onAction="#solve"
+                        text="Solve" accelerator="Shortcut+L"/>
+              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false"
+                        text="Close" accelerator="Shortcut+Q"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem fx:id="defaultValuesMenuItem" mnemonicParsing="false" onAction="#initForm" text="Default values" />
+              <MenuItem fx:id="defaultValuesMenuItem" mnemonicParsing="false"
+                        onAction="#initForm" text="Default values"
+                        accelerator="Shortcut+D"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="About"
+                        accelerator="Shortcut+Shift+A"/>
             </items>
           </Menu>
         </menus>

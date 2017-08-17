@@ -1,6 +1,6 @@
 package com.mlaskows;
 
-import com.mlaskows.antsp.config.*;
+import com.mlaskows.antsp.config.AcoConfig;
 import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.solvers.AlgorithmType;
 import com.mlaskows.draw.SolvedMapDrawer;
@@ -124,8 +124,9 @@ public class MainController {
     @FXML
     public void initialize() {
         final String os = System.getProperty("os.name");
-        if (os != null && os.startsWith("Mac"))
+        if (os != null && os.startsWith("Mac")) {
             menuBar.useSystemMenuBarProperty().set(true);
+        }
         closeMenuItem.setOnAction(event -> exit(0));
 
         initValidation();

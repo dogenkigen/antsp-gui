@@ -21,12 +21,14 @@ public class SolutionSaver extends Saver {
     @Override
     public void save() throws IOException {
         final File file = getFile("TXT files (*.txt)", "*.txt");
-        try(BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
-            writer.write(tsp.getName());
-            writer.write(System.getProperty("line.separator"));
-            writer.write(tsp.getComment());
-            writer.write(System.getProperty("line.separator"));
-            writer.write(solution.toString());
+        if (file != null) {
+            try (BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
+                writer.write(tsp.getName());
+                writer.write(System.getProperty("line.separator"));
+                writer.write(tsp.getComment());
+                writer.write(System.getProperty("line.separator"));
+                writer.write(solution.toString());
+            }
         }
     }
 }
