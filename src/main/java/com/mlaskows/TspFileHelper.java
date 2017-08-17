@@ -6,17 +6,20 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public class TspFileHelper {
 
-    public static Tsp getTsp() throws IOException {
+    public static Optional<Tsp> getTsp() throws IOException {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser
                 .ExtensionFilter("TSP file (*.tsp)", "*.tsp");
         fileChooser.getExtensionFilters().add(extFilter);
         final File file = fileChooser.showOpenDialog(null);
-        // TODO add behaviour when user escape durring file picking
-        return TspLibParser.parse(file.getAbsolutePath());
+        if (file == null) {
+            return Optional.empty();
+        }
+        return Optional.of(TspLibParser.parse(file.getAbsolutePath()));
     }
 
     public static String formatComment(String comment, int maxCommentLen) {

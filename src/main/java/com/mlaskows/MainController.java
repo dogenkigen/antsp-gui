@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static com.mlaskows.TspFileHelper.formatComment;
@@ -148,15 +149,19 @@ public class MainController {
 
     public void openFile() {
         try {
-            tsp = TspFileHelper.getTsp();
+            final Optional<Tsp> tspOptional = TspFileHelper.getTsp();
+            if (tspOptional.isPresent()) {
+                this.tsp = tspOptional.get();
+            } else {
+                return;
+            }
         } catch (Exception e) {
             DialogUtil.showError("Can't open TSP file", e.getMessage());
             return;
         }
         int maxCommentLen = (int) infoGridPane.getWidth() / 10;
         final String comment = formatComment(tsp.getComment(), maxCommentLen);
-        LOG.debug("Opening TSP: " + tsp.getName() + " " +
-                comment);
+        LOG.debug("Opening TSP: " + tsp.getName() + " " + comment);
         showInfo(comment);
         enableElementsAfterLoadingProblem();
         initFormForAlgorithmType(algorithmTypeChoiceBox.getValue());
