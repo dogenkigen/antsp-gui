@@ -123,9 +123,9 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        /*final String os = System.getProperty("os.name");
+        final String os = System.getProperty("os.name");
         if (os != null && os.startsWith("Mac"))
-            menuBar.useSystemMenuBarProperty().set(true);*/
+            menuBar.useSystemMenuBarProperty().set(true);
         closeMenuItem.setOnAction(event -> exit(0));
 
         initValidation();
@@ -209,7 +209,7 @@ public class MainController {
         }
     }
 
-    private void initForm() {
+    public void initForm() {
         hideAllOptionalFields();
         parameters.initParameters(tsp.getDimension());
         switch (parameters.getAlgorithmType()) {
