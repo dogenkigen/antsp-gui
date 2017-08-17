@@ -139,7 +139,7 @@ public class MainController {
                 .addListener(
                         (ObservableValue<? extends AlgorithmType> observable,
                          AlgorithmType oldValue,
-                         AlgorithmType newValue) -> initFormForAlgorithmType(newValue)
+                         AlgorithmType newValue) -> initForm()
                 );
     }
 
@@ -160,16 +160,15 @@ public class MainController {
         LOG.debug("Opening TSP: " + tsp.getName() + " " + comment);
         showInfo(comment);
         enableElementsAfterLoadingProblem();
-        initFormForAlgorithmType(parameters.getAlgorithmType());
+        initForm();
         new UnsolvedMapDrawer(mapCanvas, tsp).draw();
     }
 
     public void solve() {
-        final AlgorithmType algorithmType = parameters.getAlgorithmType();
-        final AcoConfig config = getConfig(algorithmType);
+        final AcoConfig config = parameters.getConfig();
         LOG.debug("Solving with config " + config.toString());
 
-        Task<Solution> task = new SolvingTask(tsp, config, algorithmType);
+        Task<Solution> task = new SolvingTask(tsp, config, parameters.getAlgorithmType());
         final Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
@@ -178,8 +177,7 @@ public class MainController {
                 solution = task.get();
                 solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
                 new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
-                saveImageMenuItem.setDisable(false);
-                saveSolutionMenuItem.setDisable(false);
+                enableElementsAfterSolvingProblem();
             } catch (InterruptedException | ExecutionException ex) {
                 final String error = "Can't solve problem ";
                 LOG.error(error + ex.getMessage());
@@ -211,36 +209,17 @@ public class MainController {
         }
     }
 
-    private void initFormForAlgorithmType(AlgorithmType algorithmType) {
-        hideAllOptionalFieldsAndValues();
-        final AcoConfig config;
-        switch (algorithmType) {
+    private void initForm() {
+        hideAllOptionalFields();
+        parameters.initParameters(tsp.getDimension());
+        switch (parameters.getAlgorithmType()) {
             case MIN_MAX:
                 showMinMaxOptionalFields();
-                config = AcoConfigFactory
-                        .createDefaultMinMaxConfig(tsp.getDimension());
-                parameters.setMinLimitDivider(((MinMaxConfig) config).getMinPheromoneLimitDivider());
-                parameters.setReinitializationCount(((MinMaxConfig) config).getReinitializationCount());
-                localSearchCheckBox.setSelected(true);
                 break;
             case RANK_BASED:
                 showRankBasedOptionalFields();
-                config = AcoConfigFactory
-                        .createDefaultRankedBasedConfig(tsp.getDimension());
-                parameters.setReinitializationCount(((RankedBasedConfig) config).getWeight());
                 break;
-            default:
-                config = AcoConfigFactory
-                        .createDefaultAntSystemConfig(tsp.getDimension());
         }
-
-        parameters.setEvaporationFactor(config.getPheromoneEvaporationFactor());
-        parameters.setPheromoneImportance(config.getPheromoneImportance());
-        parameters.setHeuristicImportance(config.getHeuristicImportance());
-        parameters.setNnFactor(config.getNearestNeighbourFactor());
-        parameters.setAntsCount(config.getAntsCount());
-        parameters.setMaxStagnationCount(config.getMaxStagnationCount());
-        LOG.debug("Alg: " + parameters.getAlgorithmType());
     }
 
     private void showRankBasedOptionalFields() {
@@ -258,7 +237,7 @@ public class MainController {
         formGridPane.getRowConstraints().get(8).setMaxHeight(31);
     }
 
-    private void hideAllOptionalFieldsAndValues() {
+    private void hideAllOptionalFields() {
         formGridPane.getRowConstraints().get(7).setMaxHeight(0);
         formGridPane.getRowConstraints().get(8).setMaxHeight(0);
         formGridPane.getChildren().remove(minLimitDividerLabel);
@@ -267,33 +246,6 @@ public class MainController {
         formGridPane.getChildren().remove(reinitializationCountTextField);
         formGridPane.getChildren().remove(weightLabel);
         formGridPane.getChildren().remove(weightTextField);
-
-        localSearchCheckBox.setSelected(false);
-    }
-
-    private AcoConfig getConfig(AlgorithmType algorithmType) {
-        final AcoConfigBuilder configBuilder;
-        switch (algorithmType) {
-            case MIN_MAX:
-                configBuilder = new MinMaxConfigBuilder()
-                        .withMinPheromoneLimitDivider(parameters.getMinLimitDivider())
-                        .withReinitializationCount(parameters.getReinitializationCount());
-                break;
-            case RANK_BASED:
-                configBuilder = new RankedBasedConfigBuilder()
-                        .withWeight(parameters.getWeight());
-                break;
-            default:
-                configBuilder = new AcoConfigBuilder();
-        }
-        configBuilder.withAntsCount(parameters.getAntsCount())
-                .withHeuristicImportance(parameters.getHeuristicImportance())
-                .withPheromoneImportance(parameters.getPheromoneImportance())
-                .withMaxStagnationCount(parameters.getMaxStagnationCount())
-                .withPheromoneEvaporationFactor(parameters.getEvaporationFactor())
-                .withNearestNeighbourFactor(parameters.getNnFactor())
-                .withWithLocalSearch(localSearchCheckBox.isSelected());
-        return configBuilder.build();
     }
 
     private void enableElementsAfterLoadingProblem() {
@@ -305,6 +257,11 @@ public class MainController {
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(comment);
+    }
+
+    private void enableElementsAfterSolvingProblem() {
+        saveImageMenuItem.setDisable(false);
+        saveSolutionMenuItem.setDisable(false);
     }
 
     private void initBinding() {
@@ -338,6 +295,9 @@ public class MainController {
         weightTextField
                 .textProperty()
                 .bindBidirectional(parameters.weightProperty(), new DecimalFormat());
+        localSearchCheckBox
+                .selectedProperty()
+                .bindBidirectional(parameters.localSearchProperty());
     }
 
     private void initValidation() {

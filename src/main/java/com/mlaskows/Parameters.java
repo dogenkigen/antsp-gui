@@ -1,5 +1,6 @@
 package com.mlaskows;
 
+import com.mlaskows.antsp.config.*;
 import com.mlaskows.antsp.solvers.AlgorithmType;
 import javafx.beans.property.*;
 
@@ -16,6 +17,61 @@ public class Parameters {
     private IntegerProperty minLimitDivider = new SimpleIntegerProperty();
     private IntegerProperty reinitializationCount = new SimpleIntegerProperty();
     private IntegerProperty weight = new SimpleIntegerProperty();
+    private BooleanProperty localSearch = new SimpleBooleanProperty();
+
+    public void initParameters(int tspDimension) {
+        final AcoConfig config;
+        setLocalSearch(false);
+        switch (getAlgorithmType()) {
+            case MIN_MAX:
+                config = AcoConfigFactory
+                        .createDefaultMinMaxConfig(tspDimension);
+                setMinLimitDivider(((MinMaxConfig) config).getMinPheromoneLimitDivider());
+                setReinitializationCount(((MinMaxConfig) config).getReinitializationCount());
+                setLocalSearch(true);
+                break;
+            case RANK_BASED:
+                config = AcoConfigFactory
+                        .createDefaultRankedBasedConfig(tspDimension);
+                setWeight(((RankedBasedConfig) config).getWeight());
+                break;
+            default:
+                config = AcoConfigFactory
+                        .createDefaultAntSystemConfig(tspDimension);
+        }
+
+        setEvaporationFactor(config.getPheromoneEvaporationFactor());
+        setPheromoneImportance(config.getPheromoneImportance());
+        setHeuristicImportance(config.getHeuristicImportance());
+        setNnFactor(config.getNearestNeighbourFactor());
+        setAntsCount(config.getAntsCount());
+        setMaxStagnationCount(config.getMaxStagnationCount());
+    }
+
+    public AcoConfig getConfig() {
+        final AcoConfigBuilder configBuilder;
+        switch (getAlgorithmType()) {
+            case MIN_MAX:
+                configBuilder = new MinMaxConfigBuilder()
+                        .withMinPheromoneLimitDivider(getMinLimitDivider())
+                        .withReinitializationCount(getReinitializationCount());
+                break;
+            case RANK_BASED:
+                configBuilder = new RankedBasedConfigBuilder()
+                        .withWeight(getWeight());
+                break;
+            default:
+                configBuilder = new AcoConfigBuilder();
+        }
+        configBuilder.withAntsCount(getAntsCount())
+                .withHeuristicImportance(getHeuristicImportance())
+                .withPheromoneImportance(getPheromoneImportance())
+                .withMaxStagnationCount(getMaxStagnationCount())
+                .withPheromoneEvaporationFactor(getEvaporationFactor())
+                .withNearestNeighbourFactor(getNnFactor())
+                .withWithLocalSearch(isLocalSearch());
+        return configBuilder.build();
+    }
 
     public AlgorithmType getAlgorithmType() {
         return algorithmType.get();
@@ -137,4 +193,15 @@ public class Parameters {
         this.weight.set(weight);
     }
 
+    public boolean isLocalSearch() {
+        return localSearch.get();
+    }
+
+    public BooleanProperty localSearchProperty() {
+        return localSearch;
+    }
+
+    public void setLocalSearch(boolean localSearch) {
+        this.localSearch.set(localSearch);
+    }
 }
