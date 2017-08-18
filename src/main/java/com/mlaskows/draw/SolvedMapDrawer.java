@@ -15,14 +15,10 @@ public class SolvedMapDrawer extends MapDrawer {
 
     private static final Logger LOG = LoggerFactory.getLogger(SolvedMapDrawer.class);
 
-    private final Canvas mapCanvas;
-    private final Tsp tsp;
     private final Solution solution;
 
     public SolvedMapDrawer(Canvas mapCanvas, Tsp tsp, Solution solution) {
         super(mapCanvas, tsp);
-        this.mapCanvas = mapCanvas;
-        this.tsp = tsp;
         this.solution = solution;
     }
 
@@ -31,7 +27,7 @@ public class SolvedMapDrawer extends MapDrawer {
         LOG.debug("Drawing solution");
 
         double drawSize = getDrawSize();
-        final GraphicsContext gc = mapCanvas.getGraphicsContext2D();
+        final GraphicsContext gc = getMapCanvas().getGraphicsContext2D();
         cleanCanvas(gc);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(drawSize);
@@ -51,7 +47,7 @@ public class SolvedMapDrawer extends MapDrawer {
     }
 
     private Node getNode(Integer previous) {
-        for (Node node : tsp.getNodes()) {
+        for (Node node : getNodes()) {
             if (previous.equals(node.getId() - 1)) {
                 return node;
             }

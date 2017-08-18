@@ -9,6 +9,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public abstract class MapDrawer {
 
     private static final Logger LOG =
@@ -17,6 +19,7 @@ public abstract class MapDrawer {
 
     private final Canvas mapCanvas;
     private final Tsp tsp;
+    private final List<Node> nodes;
     private final double xSubtract;
     private final double ySubtract;
     private final double xDivider;
@@ -29,6 +32,10 @@ public abstract class MapDrawer {
     public MapDrawer(Canvas mapCanvas, Tsp tsp) {
         this.mapCanvas = mapCanvas;
         this.tsp = tsp;
+        nodes = tsp
+                .getNodes()
+                .orElseThrow(() -> new IllegalArgumentException("TSP file " +
+                        "can't be displayed"));
         minX = getMinX();
         xSubtract = minX > 1.0 ? minX : 0.0;
         minY = getMinY();
@@ -84,31 +91,43 @@ public abstract class MapDrawer {
     }
 
     private double getMaxY() {
-        return tsp.getNodes().stream()
+        return nodes.stream()
                 .mapToDouble(n -> n.getY())
                 .max()
                 .getAsDouble();
     }
 
     private double getMaxX() {
-        return tsp.getNodes().stream()
+        return nodes.stream()
                 .mapToDouble(n -> n.getX())
                 .max()
                 .getAsDouble();
     }
 
     private double getMinY() {
-        return tsp.getNodes().stream()
+        return nodes.stream()
                 .mapToDouble(n -> n.getY())
                 .min()
                 .getAsDouble();
     }
 
     private double getMinX() {
-        return tsp.getNodes().stream()
+        return nodes.stream()
                 .mapToDouble(n -> n.getX())
                 .min()
                 .getAsDouble();
+    }
+
+    protected Canvas getMapCanvas() {
+        return mapCanvas;
+    }
+
+    protected Tsp getTsp() {
+        return tsp;
+    }
+
+    protected List<Node> getNodes() {
+        return nodes;
     }
 
     private void logValues() {

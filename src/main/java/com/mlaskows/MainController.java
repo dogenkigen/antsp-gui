@@ -159,10 +159,10 @@ public class MainController {
         int maxCommentLen = (int) infoGridPane.getWidth() / 10;
         final String comment = formatComment(tsp.getComment(), maxCommentLen);
         LOG.debug("Opening TSP: " + tsp.getName() + " " + comment);
+        new UnsolvedMapDrawer(mapCanvas, tsp).draw();
         showInfo(comment);
         enableElementsAfterLoadingProblem();
         initForm();
-        new UnsolvedMapDrawer(mapCanvas, tsp).draw();
     }
 
     public void solve() {
