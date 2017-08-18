@@ -176,8 +176,8 @@ public class MainController {
         task.setOnSucceeded(e -> {
             try {
                 solution = task.get();
-                solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
                 new SolvedMapDrawer(mapCanvas, tsp, solution).draw();
+                solutionLenLabel.setText(String.valueOf(solution.getTourLength()));
                 enableElementsAfterSolvingProblem();
             } catch (InterruptedException | ExecutionException ex) {
                 final String error = "Can't solve problem ";
