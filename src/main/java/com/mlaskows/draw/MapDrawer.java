@@ -18,50 +18,54 @@ public abstract class MapDrawer {
     private static final double MIN_DRAW_SIZE = 5;
 
     private final Canvas mapCanvas;
-    private final Tsp tsp;
     private final List<Node> nodes;
+
     private final double xSubtract;
     private final double ySubtract;
-    private final double xDivider;
-    private final double yDivider;
     private final double minX;
     private final double maxX;
     private final double minY;
     private final double maxY;
+    private final double minXSubtracted;
+    private final double minYSubtracted;
+    private final double xScaleFactor;
+    private final double yScaleFactor;
 
     public MapDrawer(Canvas mapCanvas, Tsp tsp) {
         this.mapCanvas = mapCanvas;
-        this.tsp = tsp;
         nodes = tsp
                 .getNodes()
                 .orElseThrow(() -> new IllegalArgumentException("TSP file " +
                         "can't be displayed"));
+
         minX = getMinX();
-        xSubtract = minX > 1.0 ? minX : 0.0;
+        maxX = getMaxX();
+        maxY = getMaxY();
         minY = getMinY();
+
+        xSubtract = minX > 1.0 ? minX : 0.0;
         ySubtract = minY > 1.0 ? minY : 0.0;
 
-        this.maxX = getMaxX();
-        this.maxY = getMinY() ;
-        xDivider = maxX / mapCanvas.getWidth();
-        yDivider = maxY / mapCanvas.getHeight();
+        minXSubtracted = minX - xSubtract;
+        final double maxXSubtracted = maxX - xSubtract;
+        minYSubtracted = minY - ySubtract;
+        final double maxYSubtracted = maxY - ySubtract;
+
+        final double xRange = maxXSubtracted - minXSubtracted;
+        final double yRange = maxYSubtracted - minYSubtracted;
+
+        xScaleFactor = xRange / mapCanvas.getWidth();
+        yScaleFactor = yRange / mapCanvas.getHeight();
+
         logValues();
     }
 
     public abstract void draw();
 
     public Affine getTransform() {
-        final double minXSubtracted = getMinX() - xSubtract;
-        final double maxXSubtracted = getMaxX() - xSubtract;
-        double xRange = maxXSubtracted - minXSubtracted;
-        final double minYSubtracted = getMinY() - ySubtract;
-        final double maxYSubtracted = getMaxY() - ySubtract;
-        double yRange = maxYSubtracted - minYSubtracted;
         Affine transform = new Affine();
-        double xRatio = xRange / mapCanvas.getWidth();
-        double yRatio = yRange / mapCanvas.getHeight();
         transform.appendTranslation(minXSubtracted, minYSubtracted);
-        transform.appendScale(xRatio, yRatio);
+        transform.appendScale(xScaleFactor, yScaleFactor);
         try {
             transform.invert();
         } catch (NonInvertibleTransformException e) {
@@ -70,7 +74,7 @@ public abstract class MapDrawer {
         return transform;
     }
 
-    protected void cleanCanvas( GraphicsContext gc) {
+    protected void cleanCanvas(GraphicsContext gc) {
         gc.setTransform(1, 0, 0, 1, 0, 0);
         gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
     }
@@ -83,11 +87,12 @@ public abstract class MapDrawer {
         return (node.getX() - xSubtract);
     }
 
-    protected double getDrawSize() {
-        final double v = ((maxY / mapCanvas.getHeight())
-                + (maxX / mapCanvas.getWidth()))
-                / 2;
-        return v > MIN_DRAW_SIZE ? v : MIN_DRAW_SIZE;
+    public double getXScaleFactor() {
+        return xScaleFactor;
+    }
+
+    public double getYScaleFactor() {
+        return yScaleFactor;
     }
 
     private double getMaxY() {
@@ -122,36 +127,28 @@ public abstract class MapDrawer {
         return mapCanvas;
     }
 
-    protected Tsp getTsp() {
-        return tsp;
-    }
-
     protected List<Node> getNodes() {
         return nodes;
     }
 
     private void logValues() {
         // FIXME delete this method
-        final double maxX = getMaxX();
-        final double minX = getMinX();
-        final double maxY = getMaxY();
-        final double minY = getMinY();
-        LOG.debug("min x " + minX + " max x " + maxX + " min y " + minY + " " +
-                "max y " +
-                maxY);
         LOG.debug(toString());
     }
 
     @Override
     public String toString() {
-        // FIXME this too
+        // FIXME this one too
         return "MapDrawer{" +
-                "xSubtract=" + xSubtract +
-                ", ySubtract=" + ySubtract +
-                ", xDivider=" + xDivider +
-                ", yDivider=" + yDivider +
-                ", mapCanvas.getWidth()=" + mapCanvas.getWidth() +
+                "mapCanvas.getWidth()=" + mapCanvas.getWidth() +
                 ", mapCanvas.getHeight()=" + mapCanvas.getHeight() +
+                ", nodes=" + nodes +
+                ", xSubtract=" + xSubtract +
+                ", ySubtract=" + ySubtract +
+                ", minX=" + minX +
+                ", maxX=" + maxX +
+                ", minY=" + minY +
+                ", maxY=" + maxY +
                 '}';
     }
 }

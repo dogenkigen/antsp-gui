@@ -22,10 +22,9 @@ public class UnsolvedMapDrawer extends MapDrawer {
         cleanCanvas(gc);
         gc.setFill(Color.BLACK);
         gc.setTransform(getTransform());
-        double drawSize = getDrawSize();
         getNodes()
                 .forEach(node -> gc.fillRect(getX(node), getY(node),
-                        drawSize, drawSize));
+                        getXScaleFactor() * 2, getYScaleFactor() * 2));
         LOG.debug("Done drawing");
     }
 
