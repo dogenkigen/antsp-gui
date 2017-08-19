@@ -252,6 +252,7 @@ public class MainController {
     private void enableElementsAfterLoadingProblem() {
         formGridPane.setDisable(false);
         solveMenuItem.setDisable(false);
+        saveImageMenuItem.setDisable(false);
     }
 
     private void showInfo(String comment) {
@@ -261,7 +262,6 @@ public class MainController {
     }
 
     private void enableElementsAfterSolvingProblem() {
-        saveImageMenuItem.setDisable(false);
         saveSolutionMenuItem.setDisable(false);
     }
 
