@@ -283,7 +283,7 @@ public class MainController {
                 .bindBidirectional(parameters.nnFactorProperty(), new DecimalFormat());
         antsCountTextField
                 .textProperty()
-                .bind(parameters.antsCountProperty());
+                .bindBidirectional(parameters.antsCountProperty(), new DecimalFormat());
         maxStagnationTextField
                 .textProperty()
                 .bindBidirectional(parameters.maxStagnationCountProperty(), new DecimalFormat());

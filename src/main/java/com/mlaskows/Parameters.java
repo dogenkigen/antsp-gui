@@ -12,10 +12,7 @@ public class Parameters {
     private IntegerProperty pheromoneImportance = new SimpleIntegerProperty();
     private IntegerProperty heuristicImportance = new SimpleIntegerProperty();
     private IntegerProperty nnFactor = new SimpleIntegerProperty();
-    // FIXME antsCont should be IntegerProperty but for some reason
-    // bidirectional binding will not work for TSP files above dimension
-    // 1000. This issue could be related to GC run
-    private StringProperty antsCount = new SimpleStringProperty();
+    private IntegerProperty antsCount = new SimpleIntegerProperty();
     private IntegerProperty maxStagnationCount = new SimpleIntegerProperty();
     private IntegerProperty minLimitDivider = new SimpleIntegerProperty();
     private IntegerProperty reinitializationCount = new SimpleIntegerProperty();
@@ -141,15 +138,15 @@ public class Parameters {
     }
 
     public int getAntsCount() {
-        return Integer.parseInt(antsCount.get());
+        return antsCount.get();
     }
 
-    public StringProperty antsCountProperty() {
+    public IntegerProperty antsCountProperty() {
         return antsCount;
     }
 
     public void setAntsCount(int antsCount) {
-        this.antsCount.set(String.valueOf(antsCount));
+        this.antsCount.set(antsCount);
     }
 
     public int getMaxStagnationCount() {
