@@ -1,5 +1,6 @@
 package com.mlaskows;
 
+import com.mlaskows.dialog.DialogUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

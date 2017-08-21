@@ -1,4 +1,4 @@
-package com.mlaskows;
+package com.mlaskows.dialog;
 
 import javafx.scene.control.Alert;
 
