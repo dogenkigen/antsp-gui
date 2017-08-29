@@ -29,7 +29,7 @@ public class MainApp extends Application {
         Parent root = loader.load(getClass().getResourceAsStream(fxmlFile));
 
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                    e.printStackTrace();
+                    LOG.error("Unexpected error", e);
                     final String message =
                             ((InvocationTargetException) e.getCause())
                                     .getTargetException()
