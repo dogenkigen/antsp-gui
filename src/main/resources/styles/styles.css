@@ -1,6 +1,6 @@
 /* Application wide styles */
 
-#mapStackPane {
+#mapPane {
     -fx-background-color: white;
     -fx-border-color: black;
     /*-fx-border-insets: 5;*/
