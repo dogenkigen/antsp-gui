@@ -18,7 +18,9 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.slf4j.Logger;
@@ -41,6 +43,9 @@ public class MainController {
     private Solution solution;
 
     private Parameters parameters = new Parameters();
+
+    @FXML
+    private BorderPane mainBorderPane;
 
     // menu
 
@@ -121,8 +126,10 @@ public class MainController {
 
     // map
 
-    @FXML
     private Canvas mapCanvas;
+
+    @FXML
+    private Pane mapPane;
 
     @FXML
     public void initialize() {
@@ -145,6 +152,16 @@ public class MainController {
                          AlgorithmType oldValue,
                          AlgorithmType newValue) -> initForm()
                 );
+    }
+
+    public void initMapCanvas() {
+        final double rightWidth = mainBorderPane.getRight().getLayoutBounds().getWidth();
+        final double mainBorderPaneWidth = mainBorderPane.getWidth();
+        final double mainBorderPaneHeight = mainBorderPane.getHeight();
+        final double bottomHeight = mainBorderPane.getBottom().getLayoutBounds().getHeight();
+        mapCanvas = new Canvas(mainBorderPaneWidth - rightWidth,
+                mainBorderPaneHeight - bottomHeight);
+        mapPane.getChildren().add(mapCanvas);
     }
 
     public void openFile() {

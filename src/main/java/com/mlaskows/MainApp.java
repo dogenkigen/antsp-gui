@@ -2,10 +2,12 @@ package com.mlaskows;
 
 import com.mlaskows.dialog.DialogUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ public class MainApp extends Application {
         Parent root = loader.load(getClass().getResourceAsStream(fxmlFile));
 
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+                    e.printStackTrace();
                     final String message =
                             ((InvocationTargetException) e.getCause())
                                     .getTargetException()
@@ -44,6 +47,9 @@ public class MainApp extends Application {
         final Scene scene = new Scene(root, width, height);
         scene.getStylesheets().add("/styles/styles.css");
 
+        final MainController controller = loader.getController();
+        stage.addEventHandler(WindowEvent.WINDOW_SHOWING, w -> Platform
+                .runLater(() -> controller.initMapCanvas()));
         stage.setTitle("Antsp");
         stage.setScene(scene);
         stage.setResizable(false);

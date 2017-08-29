@@ -115,13 +115,6 @@
       </GridPane>
    </right>
    <left>
-       <StackPane fx:id="mapStackPane">
-          <children>
-              <Canvas fx:id="mapCanvas" height="635.0" width="1090.0" BorderPane.alignment="CENTER">
-               <StackPane.margin>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </StackPane.margin></Canvas>
-          </children>
-       </StackPane>
+       <Pane fx:id="mapPane"/>
    </left>
 </BorderPane>
