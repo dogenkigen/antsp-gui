@@ -157,10 +157,9 @@ public class MainController {
     public void initMapCanvas() {
         final double rightWidth = mainBorderPane.getRight().getLayoutBounds().getWidth();
         final double mainBorderPaneWidth = mainBorderPane.getWidth();
-        final double mainBorderPaneHeight = mainBorderPane.getHeight();
+        final double rightHeight = mainBorderPane.getRight().getLayoutBounds().getHeight();
         final double bottomHeight = mainBorderPane.getBottom().getLayoutBounds().getHeight();
-        mapCanvas = new Canvas(mainBorderPaneWidth - rightWidth,
-                mainBorderPaneHeight - bottomHeight);
+        mapCanvas = new Canvas(mainBorderPaneWidth - rightWidth,rightHeight - bottomHeight);
         mapPane.getChildren().add(mapCanvas);
     }
 
