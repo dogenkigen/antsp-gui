@@ -285,36 +285,38 @@ public class MainController {
     }
 
     private void initBinding() {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setGroupingUsed(false);
         algorithmTypeChoiceBox
                 .valueProperty()
                 .bindBidirectional(parameters.algorithmTypeProperty());
         evaporationFactorTextField
                 .textProperty()
-                .bindBidirectional(parameters.evaporationFactorProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.evaporationFactorProperty(), decimalFormat);
         pheromoneImportanceTextField
                 .textProperty()
-                .bindBidirectional(parameters.pheromoneImportanceProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.pheromoneImportanceProperty(), decimalFormat);
         heuristicImportanceTextField
                 .textProperty()
-                .bindBidirectional(parameters.heuristicImportanceProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.heuristicImportanceProperty(), decimalFormat);
         nnFactorTextField
                 .textProperty()
-                .bindBidirectional(parameters.nnFactorProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.nnFactorProperty(), decimalFormat);
         antsCountTextField
                 .textProperty()
-                .bindBidirectional(parameters.antsCountProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.antsCountProperty(), decimalFormat);
         maxStagnationTextField
                 .textProperty()
-                .bindBidirectional(parameters.maxStagnationCountProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.maxStagnationCountProperty(), decimalFormat);
         minLimitDividerTextField
                 .textProperty()
-                .bindBidirectional(parameters.minLimitDividerProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.minLimitDividerProperty(), decimalFormat);
         reinitializationCountTextField
                 .textProperty()
-                .bindBidirectional(parameters.reinitializationCountProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.reinitializationCountProperty(), decimalFormat);
         weightTextField
                 .textProperty()
-                .bindBidirectional(parameters.weightProperty(), new DecimalFormat());
+                .bindBidirectional(parameters.weightProperty(), decimalFormat);
         localSearchCheckBox
                 .selectedProperty()
                 .bindBidirectional(parameters.localSearchProperty());
