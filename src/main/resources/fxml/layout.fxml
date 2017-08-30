@@ -115,6 +115,6 @@
       </GridPane>
    </right>
    <left>
-       <Pane fx:id="mapPane"/>
+       <StackPane fx:id="mapStackPane"/>
    </left>
 </BorderPane>

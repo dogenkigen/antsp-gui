@@ -15,12 +15,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.slf4j.Logger;
@@ -129,7 +131,7 @@ public class MainController {
     private Canvas mapCanvas;
 
     @FXML
-    private Pane mapPane;
+    private StackPane mapStackPane;
 
     @FXML
     public void initialize() {
@@ -155,12 +157,17 @@ public class MainController {
     }
 
     public void initMapCanvas() {
+        final int paddingValue = 10;
         final double rightWidth = mainBorderPane.getRight().getLayoutBounds().getWidth();
         final double mainBorderPaneWidth = mainBorderPane.getWidth();
         final double rightHeight = mainBorderPane.getRight().getLayoutBounds().getHeight();
         final double bottomHeight = mainBorderPane.getBottom().getLayoutBounds().getHeight();
-        mapCanvas = new Canvas(mainBorderPaneWidth - rightWidth,rightHeight - bottomHeight);
-        mapPane.getChildren().add(mapCanvas);
+        mapCanvas = new Canvas(mainBorderPaneWidth - rightWidth - paddingValue,
+                rightHeight - bottomHeight - paddingValue);
+        mapStackPane.setPadding(new Insets(paddingValue, paddingValue, paddingValue,
+                paddingValue));
+        mapStackPane.setAlignment(mapCanvas, Pos.CENTER);
+        mapStackPane.getChildren().add(mapCanvas);
     }
 
     public void openFile() {
