@@ -19,7 +19,7 @@ public class TspFileHelper {
         if (file == null) {
             return Optional.empty();
         }
-        return Optional.of(TspLibParser.parse(file.getAbsolutePath()));
+        return Optional.of(TspLibParser.parseTsp(file.getAbsolutePath()));
     }
 
     public static String formatComment(String comment, int maxCommentLen) {
