@@ -14,7 +14,7 @@ import com.mlaskows.antsp.solvers.antsolvers.MinMaxAntSolver;
 import com.mlaskows.antsp.solvers.antsolvers.RankBasedAntSolver;
 import com.mlaskows.dialog.DialogUtil;
 import com.mlaskows.dialog.ProgressDialog;
-import com.mlaskows.tsplib.datamodel.Tsp;
+import com.mlaskows.tsplib.datamodel.item.Tsp;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;

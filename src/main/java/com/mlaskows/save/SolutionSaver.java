@@ -1,7 +1,7 @@
 package com.mlaskows.save;
 
 import com.mlaskows.antsp.datamodel.Solution;
-import com.mlaskows.tsplib.datamodel.Tsp;
+import com.mlaskows.tsplib.datamodel.item.Tsp;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -10,7 +10,7 @@ import com.mlaskows.filter.DoubleFilter;
 import com.mlaskows.filter.IntegerFilter;
 import com.mlaskows.save.ImageSaver;
 import com.mlaskows.save.SolutionSaver;
-import com.mlaskows.tsplib.datamodel.Tsp;
+import com.mlaskows.tsplib.datamodel.item.Tsp;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;

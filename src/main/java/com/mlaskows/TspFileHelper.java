@@ -1,7 +1,7 @@
 package com.mlaskows;
 
-import com.mlaskows.tsplib.TspLibParser;
-import com.mlaskows.tsplib.datamodel.Tsp;
+import com.mlaskows.tsplib.parser.TspLibParser;
+import com.mlaskows.tsplib.datamodel.item.Tsp;
 import javafx.stage.FileChooser;
 
 import java.io.File;

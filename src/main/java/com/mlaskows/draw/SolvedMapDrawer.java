@@ -1,8 +1,8 @@
 package com.mlaskows.draw;
 
 import com.mlaskows.antsp.datamodel.Solution;
-import com.mlaskows.tsplib.datamodel.Node;
-import com.mlaskows.tsplib.datamodel.Tsp;
+import com.mlaskows.tsplib.datamodel.item.Node;
+import com.mlaskows.tsplib.datamodel.item.Tsp;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
