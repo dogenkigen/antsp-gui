@@ -241,7 +241,7 @@ public class MainController {
         parameters.initParameters(tsp.getDimension());
         switch (parameters.getAlgorithmType()) {
             case MIN_MAX:
-                showMinMaxOptionalFields();
+                showMaxMinOptionalFields();
                 break;
             case RANK_BASED:
                 showRankBasedOptionalFields();
@@ -255,7 +255,7 @@ public class MainController {
         formGridPane.getRowConstraints().get(7).setMaxHeight(31);
     }
 
-    private void showMinMaxOptionalFields() {
+    private void showMaxMinOptionalFields() {
         formGridPane.add(minLimitDividerLabel, 0, 7);
         formGridPane.add(minLimitDividerTextField, 1, 7);
         formGridPane.getRowConstraints().get(7).setMaxHeight(31);
