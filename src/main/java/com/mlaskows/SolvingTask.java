@@ -1,7 +1,7 @@
 package com.mlaskows;
 
 import com.mlaskows.antsp.config.AcoConfig;
-import com.mlaskows.antsp.config.MinMaxConfig;
+import com.mlaskows.antsp.config.MaxMinConfig;
 import com.mlaskows.antsp.config.RankedBasedConfig;
 import com.mlaskows.antsp.datamodel.Solution;
 import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
@@ -10,7 +10,7 @@ import com.mlaskows.antsp.solvers.AlgorithmType;
 import com.mlaskows.antsp.solvers.Solver;
 import com.mlaskows.antsp.solvers.antsolvers.AntSystemSolver;
 import com.mlaskows.antsp.solvers.antsolvers.ElitistAntSolver;
-import com.mlaskows.antsp.solvers.antsolvers.MinMaxAntSolver;
+import com.mlaskows.antsp.solvers.antsolvers.MaxMinAntSolver;
 import com.mlaskows.antsp.solvers.antsolvers.RankBasedAntSolver;
 import com.mlaskows.dialog.DialogUtil;
 import com.mlaskows.dialog.ProgressDialog;
@@ -62,7 +62,7 @@ public class SolvingTask extends Task<Solution> {
             case RANK_BASED:
                 return new RankBasedAntSolver(matrices, (RankedBasedConfig) config);
             case MIN_MAX:
-                return new MinMaxAntSolver(matrices, (MinMaxConfig) config);
+                return new MaxMinAntSolver(matrices, (MaxMinConfig) config);
             case ELITIST:
                 return new ElitistAntSolver(matrices, config);
             default:

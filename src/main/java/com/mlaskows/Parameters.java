@@ -25,9 +25,9 @@ public class Parameters {
         switch (getAlgorithmType()) {
             case MIN_MAX:
                 config = AcoConfigFactory
-                        .createDefaultMinMaxConfig(tspDimension);
-                setMinLimitDivider(((MinMaxConfig) config).getMinPheromoneLimitDivider());
-                setReinitializationCount(((MinMaxConfig) config).getReinitializationCount());
+                        .createDefaultMaxMinConfig(tspDimension);
+                setMinLimitDivider(((MaxMinConfig) config).getMinPheromoneLimitDivider());
+                setReinitializationCount(((MaxMinConfig) config).getReinitializationCount());
                 setLocalSearch(true);
                 break;
             case RANK_BASED:
@@ -56,7 +56,7 @@ public class Parameters {
         final AcoConfigBuilder configBuilder;
         switch (getAlgorithmType()) {
             case MIN_MAX:
-                configBuilder = new MinMaxConfigBuilder()
+                configBuilder = new MaxMinConfigBuilder()
                         .withMinPheromoneLimitDivider(getMinLimitDivider())
                         .withReinitializationCount(getReinitializationCount());
                 break;
