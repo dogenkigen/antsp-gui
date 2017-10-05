@@ -4,8 +4,10 @@ import com.mlaskows.dialog.DialogUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
@@ -38,13 +40,9 @@ public class MainApp extends Application {
                 }
         );
 
-        GraphicsDevice gd = GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice();
-        int width = gd.getDisplayMode().getWidth();
-        int height = gd.getDisplayMode().getHeight();
+        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
 
-        final Scene scene = new Scene(root, width, height);
+        final Scene scene = new Scene(root, visualBounds.getWidth(), visualBounds.getHeight());
         scene.getStylesheets().add("/styles/styles.css");
 
         final MainController controller = loader.getController();
@@ -53,6 +51,8 @@ public class MainApp extends Application {
         stage.setTitle("Antsp");
         stage.setScene(scene);
         stage.setResizable(false);
+        // for windows?
+        //stage.setFullScreen(true);
         stage.show();
     }
 }
