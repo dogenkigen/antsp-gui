@@ -40,9 +40,7 @@ public class MainApp extends Application {
                 }
         );
 
-        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-
-        final Scene scene = new Scene(root, visualBounds.getWidth(), visualBounds.getHeight());
+        final Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
 
         final MainController controller = loader.getController();
@@ -50,9 +48,8 @@ public class MainApp extends Application {
                 .runLater(() -> controller.initMapCanvas()));
         stage.setTitle("Antsp");
         stage.setScene(scene);
-        stage.setResizable(false);
-        // for windows?
-        //stage.setFullScreen(true);
+        //stage.setResizable(false);
+        stage.setMaximized(true);
         stage.show();
     }
 }
