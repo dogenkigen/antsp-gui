@@ -45,7 +45,7 @@ public class MainApp extends Application {
 
         final MainController controller = loader.getController();
         stage.addEventHandler(WindowEvent.WINDOW_SHOWING, w -> Platform
-                .runLater(() -> controller.initMapCanvas()));
+                .runLater(controller::initMapCanvas));
         stage.setTitle("Antsp");
         stage.setScene(scene);
         //stage.setResizable(false);
