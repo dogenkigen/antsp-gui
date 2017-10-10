@@ -186,7 +186,7 @@ public class MainController {
         final String comment = formatComment(tsp.getComment(), maxCommentLen);
         LOG.debug("Opening TSP: " + tsp.getName() + " " + comment);
         new UnsolvedMapDrawer(mapCanvas, tsp).draw();
-        showInfo(comment);
+        initializeInfo(comment);
         enableElementsAfterLoadingProblem();
         initForm();
     }
@@ -281,10 +281,11 @@ public class MainController {
         saveImageMenuItem.setDisable(false);
     }
 
-    private void showInfo(String comment) {
+    private void initializeInfo(String comment) {
         nameLabel.setText(tsp.getName());
         dimensionLabel.setText(String.valueOf(tsp.getDimension()));
         commentLabel.setText(comment);
+        solutionLenLabel.setText("");
     }
 
     private void enableElementsAfterSolvingProblem() {
