@@ -59,7 +59,7 @@
             <items>
               <MenuItem fx:id="defaultValuesMenuItem" mnemonicParsing="false"
                         onAction="#initForm" text="Default values"
-                        accelerator="Shortcut+D"/>
+                        accelerator="Shortcut+D" disable="true"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

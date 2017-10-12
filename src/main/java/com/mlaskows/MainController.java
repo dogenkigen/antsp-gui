@@ -66,6 +66,9 @@ public class MainController {
     @FXML
     private MenuItem saveSolutionMenuItem;
 
+    @FXML
+    private MenuItem defaultValuesMenuItem;
+
     // info
 
     @FXML
@@ -279,6 +282,7 @@ public class MainController {
         formGridPane.setDisable(false);
         solveMenuItem.setDisable(false);
         saveImageMenuItem.setDisable(false);
+        defaultValuesMenuItem.setDisable(false);
     }
 
     private void initializeInfo(String comment) {
