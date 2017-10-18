@@ -4,8 +4,8 @@ import com.mlaskows.antsp.config.AcoConfig;
 import com.mlaskows.antsp.config.MaxMinConfig;
 import com.mlaskows.antsp.config.RankedBasedConfig;
 import com.mlaskows.antsp.datamodel.Solution;
-import com.mlaskows.antsp.datamodel.matrices.StaticMatrices;
-import com.mlaskows.antsp.datamodel.matrices.StaticMatricesBuilder;
+import com.mlaskows.antsp.datamodel.data.StaticData;
+import com.mlaskows.antsp.datamodel.data.StaticDataBuilder;
 import com.mlaskows.antsp.solvers.AlgorithmType;
 import com.mlaskows.antsp.solvers.Solver;
 import com.mlaskows.antsp.solvers.antsolvers.AntSystemSolver;
@@ -46,35 +46,36 @@ public class SolvingTask extends Task<Solution> {
     @Override
     protected Solution call() throws Exception {
         runInPlatformThread(() -> progressDialog.setText("Initializing data..."));
-        final StaticMatrices matrices = getMatrices();
+        final StaticData data = getData();
         if (isCancelled()) {
             return null;
         }
         runInPlatformThread(() -> progressDialog.setText("Solving problem..."));
-        solver = getSolver(matrices);
+        solver = getSolver(data);
         return solver.getSolution();
     }
 
-    private Solver getSolver(StaticMatrices matrices) {
+    private Solver getSolver(StaticData data) {
         switch (algorithmType) {
             case ANT_SYSTEM:
-                return new AntSystemSolver(matrices, config);
+                return new AntSystemSolver(data, config);
             case RANK_BASED:
-                return new RankBasedAntSolver(matrices, (RankedBasedConfig) config);
+                return new RankBasedAntSolver(data, (RankedBasedConfig) config);
             case MIN_MAX:
-                return new MaxMinAntSolver(matrices, (MaxMinConfig) config);
+                return new MaxMinAntSolver(data, (MaxMinConfig) config);
             case ELITIST:
-                return new ElitistAntSolver(matrices, config);
+                return new ElitistAntSolver(data, config);
             default:
                 throw new IllegalArgumentException(algorithmType.toString()
                         + " not implemented yet");
         }
     }
 
-    private StaticMatrices getMatrices() {
-        final StaticMatricesBuilder builder = new StaticMatricesBuilder(tsp);
+    private StaticData getData() {
+        final StaticDataBuilder builder = new StaticDataBuilder(tsp);
         if (algorithmType.isAntBased()) {
-            builder.withHeuristicInformationMatrix();
+            builder.withHeuristicInformationMatrix()
+            .withHeuristicSolution();
         }
         return builder
                 .withNearestNeighbors(config.getNearestNeighbourFactor())
