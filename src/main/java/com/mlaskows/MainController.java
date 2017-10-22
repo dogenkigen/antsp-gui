@@ -116,10 +116,6 @@ public class MainController {
     @FXML
     private CheckBox localSearchCheckBox;
 
-    private final Label minLimitDividerLabel = new Label("Min. limit divider");
-
-    private final TextField minLimitDividerTextField = new TextField();
-
     private final Label reinitializationCountLabel =
             new Label("Reinitialization count");
 
@@ -259,19 +255,13 @@ public class MainController {
     }
 
     private void showMaxMinOptionalFields() {
-        formGridPane.add(minLimitDividerLabel, 0, 7);
-        formGridPane.add(minLimitDividerTextField, 1, 7);
+        formGridPane.add(reinitializationCountLabel, 0, 7);
+        formGridPane.add(reinitializationCountTextField, 1, 7);
         formGridPane.getRowConstraints().get(7).setMaxHeight(31);
-        formGridPane.add(reinitializationCountLabel, 0, 8);
-        formGridPane.add(reinitializationCountTextField, 1, 8);
-        formGridPane.getRowConstraints().get(8).setMaxHeight(31);
     }
 
     private void hideAllOptionalFields() {
         formGridPane.getRowConstraints().get(7).setMaxHeight(0);
-        formGridPane.getRowConstraints().get(8).setMaxHeight(0);
-        formGridPane.getChildren().remove(minLimitDividerLabel);
-        formGridPane.getChildren().remove(minLimitDividerTextField);
         formGridPane.getChildren().remove(reinitializationCountLabel);
         formGridPane.getChildren().remove(reinitializationCountTextField);
         formGridPane.getChildren().remove(weightLabel);
@@ -320,9 +310,6 @@ public class MainController {
         maxStagnationTextField
                 .textProperty()
                 .bindBidirectional(parameters.maxStagnationCountProperty(), decimalFormat);
-        minLimitDividerTextField
-                .textProperty()
-                .bindBidirectional(parameters.minLimitDividerProperty(), decimalFormat);
         reinitializationCountTextField
                 .textProperty()
                 .bindBidirectional(parameters.reinitializationCountProperty(), decimalFormat);
@@ -341,7 +328,6 @@ public class MainController {
         nnFactorTextField.setTextFormatter(getIntegerTextFormatter());
         antsCountTextField.setTextFormatter(getIntegerTextFormatter());
         maxStagnationTextField.setTextFormatter(getIntegerTextFormatter());
-        minLimitDividerTextField.setTextFormatter(getIntegerTextFormatter());
         reinitializationCountTextField.setTextFormatter(getIntegerTextFormatter());
         weightTextField.setTextFormatter(getIntegerTextFormatter());
     }
