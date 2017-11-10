@@ -346,7 +346,9 @@ public class MainController {
         alert.setHeaderText("Antsp GUI");
         alert.setContentText("This application is free software distributed under GPLv3 license.\n" +
                 "The purpose of this program is to solve TSP problems using Ant Colony Algorithms.\n" +
-                "version 0.1");
+                "version 0.1\n" +
+                "Author: Maciej Laskowski\n" +
+                "Contact: mlaskowsk@gmail.com");
 
         alert.showAndWait();
     }
