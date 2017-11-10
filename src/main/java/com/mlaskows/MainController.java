@@ -34,6 +34,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -43,7 +47,10 @@ import javafx.util.converter.IntegerStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -52,6 +59,8 @@ import static com.mlaskows.TspFileHelper.formatComment;
 import static java.lang.System.exit;
 
 public class MainController {
+
+    private static final String HOMEPAGE_ADDRESS = "https://github.com/dogenkigen/antsp-gui";
 
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
@@ -359,13 +368,34 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About");
         alert.setHeaderText("Antsp GUI");
-        alert.setContentText("This application is free software distributed under GPLv3 license.\n" +
+
+        final Label label = new Label();
+        label.setText("This application is free software distributed under GPLv3 license.\n" +
                 "The purpose of this program is to solve TSP problems using Ant Colony Algorithms.\n" +
-                "version 0.1\n" +
+                "Version: 0.1\n" +
                 "Author: Maciej Laskowski\n" +
                 "Contact: mlaskowsk@gmail.com");
 
+        final Hyperlink hyperlink = new Hyperlink();
+        hyperlink.setText(HOMEPAGE_ADDRESS);
+        hyperlink.setOnAction(event -> openHomepage());
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(hyperlink, 0, 1);
+
+        alert.getDialogPane().setContent(expContent);
+
         alert.showAndWait();
+    }
+
+    private void openHomepage() {
+        try {
+            Desktop.getDesktop().browse(new URI(HOMEPAGE_ADDRESS));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
 }
