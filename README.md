@@ -6,7 +6,7 @@ It requires two libraries to work:
 
 https://github.com/dogenkigen/tsplib-parser
 
-https://github.com/dogenkigen/antsp/tree/master
+https://github.com/dogenkigen/antsp/
 
 To build the project first you need to build both mentioned above libraries and then run maven command form root 
 directory:
